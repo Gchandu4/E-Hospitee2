@@ -9,11 +9,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const pool = new Pool({
-  host: process.env.DB_HOST || "localhost",
-  database: process.env.DB_NAME || "appDB",
-  user: process.env.DB_USER || "postgres",
-  password: process.env.DB_PASSWORD || "12345",
-  port: process.env.DB_PORT || 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
 });
 
 async function initDB() {
