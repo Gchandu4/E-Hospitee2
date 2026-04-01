@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>E-Hospitee — Hospital & Patient Management Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+:root{
+  --teal:#0B7A75;--teal-dark:#085553;--teal-mid:#0D9488;
+  --teal-light:#CCFBF1;--teal-pale:#F0FDFA;
+  --amber:#D97706;--amber-pale:#FFFBEB;
+  --cream:#FAFAF7;--white:#FFFFFF;
+  --ink:#111827;--ink-mid:#374151;--ink-light:#6B7280;
+  --border:#E5E7EB;--border-teal:#99F6E4;
+  --red:#DC2626;--green:#16A34A;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:0 4px 16px rgba(0,0,0,.08);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.10);
+  --shadow-teal:0 8px 32px rgba(11,122,117,.18);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--ink);overflow-x:hidden;line-height:1.6}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--cream)}::-webkit-scrollbar-thumb{background:var(--teal-light);border-radius:3px}
+
+/* ── PAGE SYSTEM ── */
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:box-shadow .3s}
+nav.scrolled{box-shadow:var(--shadow-md)}
+.nav-inner{max-width:1160px;margin:0 auto;padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer}
+.logo-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--teal),var(--teal-mid));display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-teal);transition:transform .4s}
+.logo-mark:hover{transform:rotateY(20deg) rotateX(-10deg) scale(1.1)}
+.logo-text{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--ink);letter-spacing:-.02em}
+.logo-text span{color:var(--teal)}
+.nav-links{display:flex;align-items:center;gap:8px;list-style:none}
+.nav-links a,.nav-links button{text-decoration:none;color:var(--ink-mid);font-size:.9rem;font-weight:500;padding:8px 14px;border-radius:8px;transition:all .2s;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.nav-links a:hover,.nav-links button:hover{background:var(--teal-pale);color:var(--teal)}
+.nav-btn{background:var(--teal)!important;color:var(--white)!important;padding:9px 20px!important;border-radius:10px!important;font-weight:600!important;box-shadow:var(--shadow-teal)}
+.nav-btn:hover{background:var(--teal-dark)!important;transform:translateY(-1px)!important}
+.nav-btn-outline{background:transparent!important;color:var(--teal)!important;border:1.5px solid var(--teal)!important;padding:8px 18px!important;border-radius:10px!important;font-weight:600!important}
+
+/* ── SHARED COMPONENTS ── */
+.container{max-width:1160px;margin:0 auto;padding:0 32px}
+.section{padding:96px 32px}
+.section-alt{background:var(--cream)}
+.section-teal{background:var(--teal-pale)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:16px}
+.chip::before{content:'';display:block;width:18px;height:2px;background:var(--teal);border-radius:1px}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:800;line-height:1.12;letter-spacing:-.025em;color:var(--ink)}
+.section-title em{color:var(--teal);font-style:italic}
+.section-desc{font-size:1rem;color:var(--ink-light);max-width:520px;margin-top:14px;line-height:1.75}
+.section-head{margin-bottom:56px}
+.section-head.center{text-align:center}
+.section-head.center .section-desc{margin:14px auto 0}
+.section-head.center .chip{justify-content:center}
+.section-head.center .chip::before{display:none}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:var(--white);padding:14px 28px;border-radius:12px;font-weight:600;font-size:.95rem;text-decoration:none;box-shadow:var(--shadow-teal);transition:all .25s;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-primary:hover{background:var(--teal-dark);transform:translateY(-3px);box-shadow:0 16px 48px rgba(11,122,117,.32)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;background:var(--white);color:var(--ink);padding:14px 28px;border-radius:12px;font-weight:600;font-size:.95rem;text-decoration:none;border:1.5px solid var(--border);transition:all .25s;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-secondary:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-pale);transform:translateY(-3px)}
+
+/* ── AUTH PAGES ── */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 20px 40px;background:linear-gradient(160deg,var(--white) 0%,var(--teal-pale) 100%);position:relative;overflow:hidden}
+.auth-wrap::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(11,122,117,.07),transparent 70%);pointer-events:none}
+.auth-card{background:var(--white);border-radius:24px;box-shadow:var(--shadow-lg);border:1px solid var(--border);padding:48px;width:100%;max-width:480px;position:relative;z-index:1;transform-style:preserve-3d;transition:transform .4s,box-shadow .4s}
+.auth-card:hover{transform:perspective(1000px) rotateX(-1deg) translateZ(8px);box-shadow:0 24px 64px rgba(11,122,117,.14)}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px;justify-content:center}
+.auth-title{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:var(--ink);text-align:center;margin-bottom:6px}
+.auth-sub{font-size:.9rem;color:var(--ink-light);text-align:center;margin-bottom:32px}
+.auth-tabs{display:flex;gap:4px;background:var(--cream);border-radius:12px;padding:4px;margin-bottom:28px;border:1px solid var(--border)}
+.auth-tab{flex:1;padding:10px;border-radius:8px;background:transparent;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;color:var(--ink-light);transition:all .25s}
+.auth-tab.active{background:var(--white);color:var(--teal);font-weight:600;box-shadow:var(--shadow-sm)}
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:.82rem;font-weight:600;color:var(--ink-mid);margin-bottom:6px}
+.form-control{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ink);background:var(--white);outline:none;transition:all .2s}
+.form-control:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(11,122,117,.08)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-btn{width:100%;padding:14px;border-radius:12px;background:var(--teal);color:var(--white);border:none;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;box-shadow:var(--shadow-teal);transition:all .25s;margin-top:8px}
+.form-btn:hover{background:var(--teal-dark);transform:translateY(-2px)}
+.auth-switch{text-align:center;margin-top:20px;font-size:.85rem;color:var(--ink-light)}
+.auth-switch a{color:var(--teal);font-weight:600;cursor:pointer;text-decoration:none}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--ink-light);font-size:.8rem}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.role-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.role-card{padding:16px;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:all .25s;text-align:center;transform-style:preserve-3d}
+.role-card:hover,.role-card.selected{border-color:var(--teal);background:var(--teal-pale);transform:translateZ(6px)}
+.role-card-icon{font-size:1.8rem;margin-bottom:6px}
+.role-card-title{font-weight:600;font-size:.88rem;color:var(--ink)}
+.role-card-sub{font-size:.72rem;color:var(--ink-light);margin-top:2px}
+
+/* ── PATIENT DASHBOARD ── */
+.dash-wrap{display:flex;min-height:100vh;padding-top:68px}
+.sidebar{width:260px;background:var(--white);border-right:1px solid var(--border);padding:24px 0;position:fixed;top:68px;left:0;bottom:0;overflow-y:auto;z-index:100;transition:transform .3s}
+.sidebar-section{padding:0 16px;margin-bottom:8px}
+.sidebar-label{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-light);padding:8px 12px;margin-top:12px}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all .2s;color:var(--ink-mid);font-size:.88rem;font-weight:500;border:none;background:none;width:100%;font-family:'DM Sans',sans-serif;text-align:left}
+.sidebar-item:hover{background:var(--teal-pale);color:var(--teal)}
+.sidebar-item.active{background:var(--teal-pale);color:var(--teal);font-weight:600}
+.sidebar-item .si-icon{font-size:1.1rem;width:24px;text-align:center}
+.sidebar-badge{margin-left:auto;background:var(--red);color:white;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:100px}
+.dash-main{margin-left:260px;flex:1;padding:32px;background:var(--cream);min-height:calc(100vh - 68px)}
+.dash-panel{display:none}
+.dash-panel.active{display:block;animation:fadeUp .35s ease both}
+.dash-header{margin-bottom:28px}
+.dash-title{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:var(--ink)}
+.dash-sub{font-size:.88rem;color:var(--ink-light);margin-top:4px}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.dash-stat-card{background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--border);transition:all .3s;transform-style:preserve-3d}
+.dash-stat-card:hover{transform:translateZ(10px) translateY(-4px);box-shadow:var(--shadow-md)}
+.dsc-icon{font-size:1.4rem;margin-bottom:8px}
+.dsc-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:var(--teal)}
+.dsc-lbl{font-size:.75rem;color:var(--ink-light)}
+.dash-card{background:var(--white);border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:20px;transition:box-shadow .3s}
+.dash-card:hover{box-shadow:var(--shadow-md)}
+.dash-card-title{font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.dash-card-title a{font-size:.78rem;font-weight:500;color:var(--teal);text-decoration:none;cursor:pointer}
+.appt-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
+.appt-row:last-child{border-bottom:none;padding-bottom:0}
+.appt-avatar2{width:40px;height:40px;border-radius:12px;background:var(--teal-pale);border:1px solid var(--border-teal);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.appt-info{flex:1}
+.appt-doc{font-weight:600;font-size:.88rem;color:var(--ink)}
+.appt-spec{font-size:.75rem;color:var(--ink-light)}
+.status-badge{font-size:.7rem;font-weight:600;padding:4px 12px;border-radius:100px}
+.status-upcoming{background:#DBEAFE;color:#1D4ED8}
+.status-completed{background:#DCFCE7;color:var(--green)}
+.status-cancelled{background:#FEE2E2;color:var(--red)}
+.status-emergency{background:#FEE2E2;color:var(--red)}
+.record-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
+.record-item:last-child{border-bottom:none}
+.record-icon{width:40px;height:40px;border-radius:10px;background:var(--teal-pale);border:1px solid var(--border-teal);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.record-name{font-weight:600;font-size:.88rem;color:var(--ink)}
+.record-date{font-size:.75rem;color:var(--ink-light)}
+.record-btn{margin-left:auto;font-size:.75rem;color:var(--teal);font-weight:600;background:var(--teal-pale);border:1px solid var(--border-teal);padding:5px 12px;border-radius:8px;cursor:pointer;transition:all .2s;border:none}
+.record-btn:hover{background:var(--teal);color:white}
+.book-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.book-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:20px;transition:all .3s;transform-style:preserve-3d;cursor:pointer}
+.book-card:hover{border-color:var(--border-teal);box-shadow:var(--shadow-md);transform:translateZ(10px) rotateX(-2deg)}
+.book-hosp{font-weight:700;font-size:.92rem;color:var(--ink);margin-bottom:4px}
+.book-spec{font-size:.78rem;color:var(--ink-light);margin-bottom:10px}
+.book-slots{font-size:.75rem;color:var(--green);font-weight:600}
+.med-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
+.med-item:last-child{border-bottom:none}
+.med-icon{width:36px;height:36px;border-radius:10px;background:#FEF3C7;border:1px solid #FDE68A;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.med-name{font-weight:600;font-size:.88rem;color:var(--ink)}
+.med-dose{font-size:.75rem;color:var(--ink-light)}
+.med-time{margin-left:auto;font-size:.72rem;font-weight:600;color:var(--teal);background:var(--teal-pale);padding:4px 10px;border-radius:100px}
+.profile-form .form-group{margin-bottom:16px}
+.vitals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.vital-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;transition:all .3s;transform-style:preserve-3d}
+.vital-card:hover{transform:translateZ(10px);box-shadow:var(--shadow-md)}
+.vital-icon{font-size:1.8rem;margin-bottom:8px}
+.vital-val{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:var(--teal)}
+.vital-lbl{font-size:.72rem;color:var(--ink-light);margin-top:4px}
+
+/* ── HOSPITAL DASHBOARD ── */
+.hosp-nav{background:var(--teal-dark);color:white}
+.hosp-nav .nav-inner{max-width:100%;padding:0 28px}
+.hosp-nav .logo-text,.hosp-nav .logo-text span{color:white}
+.hosp-nav .nav-links a,.hosp-nav .nav-links button{color:rgba(255,255,255,.7)}
+.hosp-nav .nav-links a:hover,.hosp-nav .nav-links button:hover{background:rgba(255,255,255,.1);color:white}
+.hosp-nav .nav-btn{background:rgba(255,255,255,.15)!important;border:1px solid rgba(255,255,255,.3)!important}
+.hosp-sidebar{background:var(--teal-dark);border-right:none}
+.hosp-sidebar .sidebar-label{color:rgba(255,255,255,.4)}
+.hosp-sidebar .sidebar-item{color:rgba(255,255,255,.7)}
+.hosp-sidebar .sidebar-item:hover{background:rgba(255,255,255,.08);color:white}
+.hosp-sidebar .sidebar-item.active{background:rgba(255,255,255,.12);color:white}
+.hosp-main{background:#F1F5F9}
+.hosp-stat{background:linear-gradient(135deg,var(--teal),var(--teal-mid))}
+.hosp-stat .dsc-num{color:white}
+.hosp-stat .dsc-lbl{color:rgba(255,255,255,.7)}
+.alert-item{display:flex;align-items:flex-start;gap:14px;padding:14px;border-radius:12px;margin-bottom:10px;border:1.5px solid}
+.alert-sos{background:#FEF2F2;border-color:#FECACA}
+.alert-appt{background:#EFF6FF;border-color:#BFDBFE}
+.alert-icon{font-size:1.3rem;flex-shrink:0;margin-top:2px}
+.alert-title{font-weight:600;font-size:.88rem;color:var(--ink)}
+.alert-sub{font-size:.75rem;color:var(--ink-light);margin-top:2px}
+.alert-action{margin-left:auto;font-size:.75rem;font-weight:600;padding:5px 14px;border-radius:8px;cursor:pointer;border:none;transition:all .2s;font-family:'DM Sans',sans-serif}
+.alert-action-red{background:#DC2626;color:white}
+.alert-action-red:hover{background:#B91C1C}
+.alert-action-blue{background:#2563EB;color:white}
+.alert-action-blue:hover{background:#1D4ED8}
+.patient-table{width:100%;border-collapse:collapse}
+.patient-table th{font-size:.75rem;font-weight:600;color:var(--ink-light);text-transform:uppercase;letter-spacing:.05em;padding:10px 14px;text-align:left;border-bottom:1.5px solid var(--border)}
+.patient-table td{padding:12px 14px;font-size:.85rem;border-bottom:1px solid var(--border);vertical-align:middle}
+.patient-table tr:hover td{background:var(--teal-pale)}
+.bed-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+.bed-cell{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:600;cursor:pointer;transition:transform .2s;transform-style:preserve-3d}
+.bed-cell:hover{transform:translateZ(8px) scale(1.1)}
+.bed-free{background:#DCFCE7;color:var(--green);border:1px solid #BBF7D0}
+.bed-occupied{background:#FEE2E2;color:var(--red);border:1px solid #FECACA}
+.bed-reserved{background:#FEF3C7;color:var(--amber);border:1px solid #FDE68A}
+.hosp-form .form-control{background:#F8FAFC}
+.schedule-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
+.schedule-row:last-child{border-bottom:none}
+.schedule-time{font-size:.8rem;font-weight:700;color:var(--teal);width:70px;flex-shrink:0}
+.schedule-patient{flex:1}
+.schedule-doc{font-weight:600;font-size:.88rem;color:var(--ink)}
+.schedule-dept{font-size:.75rem;color:var(--ink-light)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s,transform .6s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+
+/* ── HERO ── */
+.hero{padding:140px 32px 100px;background:linear-gradient(160deg,var(--white) 0%,var(--teal-pale) 60%,var(--teal-light) 100%);position:relative;overflow:hidden}
+.orb{position:absolute;border-radius:50%;pointer-events:none;animation:orbFloat var(--dur,8s) ease-in-out infinite;opacity:.18}
+.orb-1{width:220px;height:220px;background:radial-gradient(circle,var(--teal),transparent);top:60px;right:15%;--dur:9s}
+.orb-2{width:140px;height:140px;background:radial-gradient(circle,#34D399,transparent);bottom:80px;left:8%;--dur:7s;animation-delay:-3s}
+.orb-3{width:90px;height:90px;background:radial-gradient(circle,var(--amber),transparent);top:40%;right:5%;--dur:6s;animation-delay:-5s}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.08)}}
+.hero-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--border-teal);color:var(--teal);padding:6px 14px;border-radius:100px;font-size:.78rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:24px;box-shadow:var(--shadow-sm);animation:fadeUp .6s ease both;transition:transform .3s}
+.hero-pill:hover{transform:translateZ(8px) scale(1.03)}
+.pill-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.6rem,4.5vw,4rem);font-weight:900;line-height:1.08;letter-spacing:-.03em;color:var(--ink);margin-bottom:20px;animation:fadeUp .6s .1s ease both}
+.hero-title em{color:var(--teal);font-style:italic}
+.hero-desc{font-size:1.08rem;color:var(--ink-light);max-width:480px;line-height:1.75;margin-bottom:36px;animation:fadeUp .6s .2s ease both}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;animation:fadeUp .6s .3s ease both}
+.hero-stats{display:flex;gap:32px;margin-top:40px;padding-top:32px;border-top:1px solid var(--border);animation:fadeUp .6s .4s ease both}
+.hero-stat-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--teal)}
+.hero-stat-label{font-size:.78rem;color:var(--ink-light);margin-top:2px}
+.hero-visual{position:relative;animation:fadeUp .8s .3s ease both;perspective:800px}
+.tilt-wrapper{transform-style:preserve-3d;transition:transform .08s linear;will-change:transform}
+.dashboard-card{background:var(--white);border-radius:20px;box-shadow:var(--shadow-lg);overflow:hidden;border:1px solid var(--border);transform-style:preserve-3d}
+.dc-header{background:linear-gradient(135deg,var(--teal),var(--teal-mid));padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+.dc-header-title{font-weight:600;color:var(--white);font-size:.95rem}
+.dc-header-sub{font-size:.75rem;color:rgba(255,255,255,.7);margin-top:2px}
+.dc-dots{display:flex;gap:6px}
+.dc-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.3)}
+.dc-dot:first-child{background:#F87171}.dc-dot:nth-child(2){background:#FBBF24}.dc-dot:nth-child(3){background:#34D399}
+.dc-body{padding:20px 24px}
+.dc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.dc-stat{background:var(--teal-pale);border-radius:12px;padding:14px;border:1px solid var(--border-teal);transition:transform .3s;transform-style:preserve-3d}
+.dc-stat:hover{transform:translateZ(12px) scale(1.04)}
+.dc-stat-num{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--teal)}
+.dc-stat-lbl{font-size:.68rem;color:var(--ink-light);margin-top:2px}
+.appt-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);margin-bottom:8px;background:var(--white);transition:transform .25s,box-shadow .25s;transform-style:preserve-3d}
+.appt-item:hover{transform:translateZ(8px) translateX(4px);box-shadow:var(--shadow-md)}
+.appt-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.appt-name{font-size:.82rem;font-weight:600;color:var(--ink)}
+.appt-spec{font-size:.7rem;color:var(--ink-light)}
+.appt-time{margin-left:auto;font-size:.72rem;font-weight:600;color:var(--teal);background:var(--teal-pale);padding:4px 10px;border-radius:100px;white-space:nowrap}
+.appt-status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.float-badge{position:absolute;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:12px 16px;box-shadow:var(--shadow-md);font-size:.82rem;animation:floatY 3s ease-in-out infinite;transition:transform .3s}
+.float-badge:hover{transform:translateZ(20px) scale(1.05)!important}
+.fb-1{top:-20px;right:-20px;animation-delay:0s}
+.fb-2{bottom:40px;left:-30px;animation-delay:1.5s}
+@keyframes floatY{0%,100%{transform:translateY(0) translateZ(10px)}50%{transform:translateY(-10px) translateZ(20px)}}
+.fb-icon{font-size:1.2rem;margin-bottom:4px}
+.fb-val{font-weight:700;color:var(--ink)}
+.fb-lbl{font-size:.68rem;color:var(--ink-light)}
+
+/* ── FEATURES ── */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.feature-card{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:32px;transition:all .35s cubic-bezier(.23,1,.32,1);position:relative;overflow:hidden;transform-style:preserve-3d;cursor:default}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--teal-light));transform:scaleX(0);transform-origin:left;transition:transform .35s}
+.feature-card:hover{transform:perspective(600px) translateZ(18px) rotateX(-3deg);box-shadow:0 20px 60px rgba(11,122,117,.15);border-color:var(--border-teal)}
+.feature-card:hover::before{transform:scaleX(1)}
+.fc-icon{width:52px;height:52px;border-radius:14px;background:var(--teal-pale);border:1px solid var(--border-teal);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:20px;transition:transform .35s;transform-style:preserve-3d}
+.feature-card:hover .fc-icon{transform:translateZ(16px) rotateY(-10deg) scale(1.1)}
+.fc-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:10px}
+.fc-desc{font-size:.88rem;color:var(--ink-light);line-height:1.75}
+.fc-tag{display:inline-block;margin-top:16px;font-size:.7rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:4px 12px;border-radius:100px;background:var(--teal-pale);color:var(--teal);border:1px solid var(--border-teal)}
+
+/* ── EMERGENCY ── */
+.emergency-section{background:linear-gradient(135deg,var(--teal-dark),var(--teal) 50%,var(--teal-mid));padding:96px 32px;position:relative;overflow:hidden}
+.emergency-section::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.emergency-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1}
+.em-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:var(--teal-light);padding:5px 14px;border-radius:100px;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:20px}
+.emergency-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,3vw,2.8rem);font-weight:900;line-height:1.1;color:var(--white);margin-bottom:20px}
+.emergency-desc{font-size:1rem;color:rgba(255,255,255,.75);line-height:1.75;margin-bottom:36px}
+.em-features{display:flex;flex-direction:column;gap:16px}
+.em-feature{display:flex;gap:14px;align-items:flex-start;transition:transform .3s;transform-style:preserve-3d}
+.em-feature:hover{transform:translateZ(10px) translateX(6px)}
+.em-check{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--teal-light);flex-shrink:0;margin-top:2px}
+.em-feat-title{font-weight:600;color:var(--white);font-size:.92rem;margin-bottom:2px}
+.em-feat-desc{font-size:.83rem;color:rgba(255,255,255,.65);line-height:1.6}
+.sos-phone{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:28px;padding:28px;backdrop-filter:blur(10px);transform-style:preserve-3d;transform:perspective(600px) rotateY(8deg) rotateX(-4deg);box-shadow:20px 20px 60px rgba(0,0,0,.25);transition:transform .4s}
+.sos-phone:hover{transform:perspective(600px) rotateY(0deg) rotateX(0deg)}
+.sos-screen{background:rgba(0,0,0,.25);border-radius:20px;padding:24px;text-align:center}
+.sos-btn-wrap{position:relative;display:inline-block;margin:16px auto}
+.sos-ring{position:absolute;inset:-16px;border-radius:50%;border:2px solid rgba(248,113,113,.4);animation:sos-ring 2s ease-out infinite}
+.sos-ring-2{position:absolute;inset:-28px;border-radius:50%;border:2px solid rgba(248,113,113,.2);animation:sos-ring 2s .5s ease-out infinite}
+@keyframes sos-ring{0%{transform:scale(.9);opacity:.8}100%{transform:scale(1.3);opacity:0}}
+.sos-btn-main{width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,#FF6B6B,#DC2626 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;color:white;box-shadow:0 0 0 6px rgba(220,38,38,.2),0 8px 24px rgba(220,38,38,.4);position:relative;z-index:1;transition:transform .2s}
+.sos-btn-main:hover{transform:scale(1.08)}
+.sos-btn-main small{font-size:.55rem;font-weight:400;opacity:.85;margin-top:2px}
+.sos-info{font-size:.75rem;color:rgba(255,255,255,.6);margin-top:8px}
+.sos-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.sos-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;transition:transform .3s,background .3s;transform-style:preserve-3d}
+.sos-card:hover{transform:translateZ(12px);background:rgba(255,255,255,.12)}
+.sos-card-icon{font-size:1.1rem;margin-bottom:4px}
+.sos-card-val{font-size:.9rem;font-weight:700;color:var(--white)}
+.sos-card-lbl{font-size:.65rem;color:rgba(255,255,255,.5)}
+
+/* ── TESTIMONIALS ── */
+.testimonials-track{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.testimonial-card{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:28px;transition:all .35s cubic-bezier(.23,1,.32,1);transform-style:preserve-3d}
+.testimonial-card:hover{box-shadow:0 20px 60px rgba(11,122,117,.14);border-color:var(--border-teal);transform:translateZ(16px) rotateX(-2deg)}
+.tc-stars{color:var(--amber);font-size:.85rem;margin-bottom:14px;letter-spacing:2px}
+.tc-quote{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;line-height:1.7;color:var(--ink-mid);margin-bottom:20px}
+.tc-author{display:flex;align-items:center;gap:12px}
+.tc-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;background:var(--teal-pale);border:1.5px solid var(--border-teal);flex-shrink:0;transition:transform .3s;transform-style:preserve-3d}
+.testimonial-card:hover .tc-avatar{transform:translateZ(24px) scale(1.1)}
+.tc-name{font-weight:600;font-size:.88rem;color:var(--ink)}
+.tc-role{font-size:.75rem;color:var(--ink-light)}
+
+/* ── STATS BAR ── */
+.stats-bar{background:var(--teal);padding:56px 32px}
+.stats-bar-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.1)}
+.stat-block{text-align:center;padding:32px 24px;transition:transform .3s,background .3s;transform-style:preserve-3d}
+.stat-block:hover{background:rgba(255,255,255,.06);transform:translateZ(14px)}
+.stat-block-num{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:800;color:var(--white);line-height:1}
+.stat-block-lbl{font-size:.85rem;color:rgba(255,255,255,.7);margin-top:8px}
+
+/* ── CTA ── */
+.cta-section{padding:96px 32px}
+.cta-card{max-width:900px;margin:0 auto;background:linear-gradient(160deg,var(--teal-pale),var(--white));border:1.5px solid var(--border-teal);border-radius:28px;padding:64px;text-align:center;position:relative;overflow:hidden;transform-style:preserve-3d;transition:transform .4s,box-shadow .4s}
+.cta-card:hover{transform:perspective(1000px) rotateX(-2deg) translateZ(10px);box-shadow:0 32px 80px rgba(11,122,117,.15)}
+.cta-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,3vw,2.6rem);font-weight:900;color:var(--ink);letter-spacing:-.025em;margin-bottom:16px}
+.cta-title em{color:var(--teal);font-style:italic}
+.cta-desc{font-size:1rem;color:var(--ink-light);margin-bottom:36px;max-width:480px;margin-left:auto;margin-right:auto}
+.cta-form{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-form .form-input{padding:13px 20px;border-radius:12px;border:1.5px solid var(--border);background:var(--white);font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--ink);min-width:240px;outline:none;transition:border-color .2s}
+.cta-form .form-input:focus{border-color:var(--teal)}
+.cta-note{font-size:.78rem;color:var(--ink-light);margin-top:16px}
+
+/* ── TRUSTED ── */
+.trusted{padding:48px 32px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.trusted-inner{max-width:1160px;margin:0 auto}
+.trusted-label{font-size:.78rem;color:var(--ink-light);font-weight:500;text-align:center;letter-spacing:.06em;text-transform:uppercase;margin-bottom:28px}
+.trusted-logos{display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap}
+.trusted-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:var(--ink-light);opacity:.5;letter-spacing:-.01em;transition:all .3s;transform-style:preserve-3d}
+.trusted-logo:hover{opacity:.85;transform:translateZ(10px) scale(1.08);color:var(--teal)}
+
+/* ── FOOTER ── */
+footer{background:var(--ink);color:rgba(255,255,255,.7);padding:64px 32px 40px}
+.footer-inner{max-width:1160px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-heading{font-weight:700;color:var(--white);font-size:.88rem;margin-bottom:16px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:.85rem;transition:all .25s;display:inline-block}
+.footer-links a:hover{color:var(--teal-light);transform:translateX(4px)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:28px;border-top:1px solid rgba(255,255,255,.08);font-size:.8rem}
+.footer-bottom-links{display:flex;gap:24px}
+.footer-bottom-links a{color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s;font-size:.8rem}
+
+/* ── HOW IT WORKS ── */
+.hiw-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.hiw-steps{display:flex;flex-direction:column}
+.hiw-step{display:flex;gap:20px;padding:24px 0;cursor:pointer;border-bottom:1px solid var(--border);transition:all .25s}
+.hiw-step:last-child{border-bottom:none}
+.hiw-step.active .step-num{background:var(--teal);color:var(--white);box-shadow:var(--shadow-teal);transform:translateZ(8px) scale(1.08)}
+.hiw-step.active .step-title{color:var(--teal)}
+.step-num{width:40px;height:40px;border-radius:12px;background:var(--cream);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;color:var(--ink-light);transition:all .3s;flex-shrink:0;transform-style:preserve-3d}
+.step-title{font-weight:600;font-size:.95rem;color:var(--ink);margin-bottom:4px}
+.step-desc{font-size:.85rem;color:var(--ink-light);line-height:1.65}
+.hiw-visual{position:sticky;top:100px;perspective:800px}
+.hiw-screen{background:var(--white);border-radius:24px;border:1.5px solid var(--border);overflow:hidden;display:none;transform:perspective(800px) rotateY(-8deg) rotateX(4deg);box-shadow:20px 20px 60px rgba(0,0,0,.12);transition:transform .4s}
+.hiw-screen:hover{transform:perspective(800px) rotateY(0deg) rotateX(0deg)}
+.hiw-screen.active{display:block;animation:screenIn .4s ease both}
+@keyframes screenIn{from{opacity:0;transform:perspective(800px) rotateY(-20deg) rotateX(8deg) scale(.95)}to{opacity:1;transform:perspective(800px) rotateY(-8deg) rotateX(4deg) scale(1)}}
+.hs-header{background:linear-gradient(135deg,var(--teal),var(--teal-dark));padding:18px 20px;display:flex;align-items:center;gap:10px}
+.hs-title{font-size:.9rem;font-weight:600;color:var(--white)}
+.hs-body{padding:20px}
+
+/* FOR WHO */
+.for-who-tabs{display:flex;gap:4px;background:var(--cream);border-radius:14px;padding:4px;width:fit-content;margin:0 auto 48px;border:1px solid var(--border)}
+.fw-tab{padding:10px 28px;border-radius:10px;background:transparent;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;color:var(--ink-light);transition:all .25s}
+.fw-tab.active{background:var(--white);color:var(--teal);font-weight:600;box-shadow:var(--shadow-sm)}
+.fw-content{display:none}
+.fw-content.active{display:grid;grid-template-columns:1fr 1fr;gap:16px;animation:fadeUp .35s ease both}
+.fw-card{background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:28px;transition:all .3s cubic-bezier(.23,1,.32,1);transform-style:preserve-3d}
+.fw-card:hover{border-color:var(--border-teal);box-shadow:0 16px 48px rgba(11,122,117,.14);transform:translateZ(14px) rotateX(-2deg) rotateY(2deg)}
+.fw-icon{font-size:1.6rem;margin-bottom:12px;transition:transform .3s;display:inline-block}
+.fw-card:hover .fw-icon{transform:translateZ(20px) scale(1.15) rotateY(-15deg)}
+.fw-title{font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:8px}
+.fw-desc{font-size:.85rem;color:var(--ink-light);line-height:1.7}
+.fw-badge{display:inline-block;margin-top:12px;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:3px 10px;border-radius:100px;background:var(--teal-pale);color:var(--teal);border:1px solid var(--border-teal)}
+
+/* ── WHATSAPP ── */
+.wa-fab{position:fixed;bottom:28px;right:28px;z-index:9998;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.wa-btn{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#25D366,#128C7E);box-shadow:0 6px 24px rgba(37,211,102,.45),0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;transition:all .3s cubic-bezier(.23,1,.32,1);transform-style:preserve-3d;position:relative;flex-shrink:0}
+.wa-btn:hover{transform:scale(1.12) translateZ(8px);box-shadow:0 12px 40px rgba(37,211,102,.55)}
+.wa-btn svg{width:32px;height:32px;fill:white}
+.wa-dot{position:absolute;top:2px;right:2px;width:14px;height:14px;background:#FF3B30;border-radius:50%;border:2px solid white;font-size:.55rem;font-weight:800;color:white;display:flex;align-items:center;justify-content:center}
+.wa-pulse{position:absolute;inset:0;border-radius:50%;background:rgba(37,211,102,.4);animation:wa-pulse 2s ease-out infinite}
+@keyframes wa-pulse{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.8);opacity:0}}
+.wa-tooltip{background:var(--ink);color:white;font-size:.78rem;font-weight:500;padding:7px 14px;border-radius:10px;white-space:nowrap;box-shadow:var(--shadow-md);opacity:0;transform:translateX(10px);transition:all .25s;pointer-events:none;position:absolute;right:72px;bottom:12px}
+.wa-btn:hover .wa-tooltip,.wa-fab:hover .wa-tooltip{opacity:1;transform:translateX(0)}
+
+/* CHAT WINDOW */
+.wa-chat{position:fixed;bottom:100px;right:28px;z-index:9997;width:360px;background:var(--white);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.18),0 4px 16px rgba(0,0,0,.08);overflow:hidden;display:none;flex-direction:column;transform:scale(.92) translateY(20px);opacity:0;transition:all .35s cubic-bezier(.23,1,.32,1);transform-origin:bottom right;max-height:560px}
+.wa-chat.open{display:flex;transform:scale(1) translateY(0);opacity:1}
+.wa-chat-head{background:linear-gradient(135deg,#075E54,#128C7E);padding:16px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.wa-chat-avatar{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.wa-chat-name{font-weight:700;color:white;font-size:.95rem}
+.wa-chat-status{font-size:.72rem;color:rgba(255,255,255,.75);margin-top:1px;display:flex;align-items:center;gap:4px}
+.wa-online-dot{width:6px;height:6px;border-radius:50%;background:#25D366;display:inline-block}
+.wa-chat-close{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.8);font-size:1.3rem;cursor:pointer;padding:4px;line-height:1;transition:color .2s}
+.wa-chat-close:hover{color:white}
+.wa-chat-tabs{display:flex;background:#f0f0f0;border-bottom:1px solid var(--border);flex-shrink:0}
+.wa-chat-tab{flex:1;padding:9px 6px;font-size:.72rem;font-weight:600;color:var(--ink-light);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;border-bottom:2px solid transparent}
+.wa-chat-tab.active{color:#128C7E;border-bottom-color:#25D366;background:var(--white)}
+.wa-tab-content{display:none;flex-direction:column;flex:1;overflow:hidden}
+.wa-tab-content.active{display:flex}
+
+/* CHAT TAB */
+.wa-messages{flex:1;overflow-y:auto;padding:14px;background:#ECE5DD;display:flex;flex-direction:column;gap:8px;min-height:200px;max-height:300px}
+.wa-messages::-webkit-scrollbar{width:4px}
+.wa-messages::-webkit-scrollbar-thumb{background:rgba(0,0,0,.2);border-radius:2px}
+.wa-msg{max-width:80%;padding:9px 12px;border-radius:14px;font-size:.82rem;line-height:1.5;position:relative}
+.wa-msg-in{background:white;align-self:flex-start;border-bottom-left-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.wa-msg-out{background:#DCF8C6;align-self:flex-end;border-bottom-right-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.wa-msg-time{font-size:.6rem;color:rgba(0,0,0,.4);margin-top:3px;text-align:right}
+.wa-msg-out .wa-msg-time{display:flex;align-items:center;justify-content:flex-end;gap:3px}
+.wa-tick{color:#53bdeb;font-size:.65rem}
+.wa-typing{display:flex;gap:4px;align-items:center;padding:10px 14px;background:white;border-radius:14px;align-self:flex-start;width:60px}
+.wa-typing span{width:7px;height:7px;border-radius:50%;background:#aaa;animation:watype 1.2s ease-in-out infinite}
+.wa-typing span:nth-child(2){animation-delay:.2s}
+.wa-typing span:nth-child(3){animation-delay:.4s}
+@keyframes watype{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.wa-input-row{display:flex;align-items:flex-end;gap:8px;padding:10px 12px;background:var(--white);border-top:1px solid var(--border);flex-shrink:0}
+.wa-input-wrap{flex:1;background:#f0f0f0;border-radius:24px;display:flex;align-items:center;gap:6px;padding:6px 12px}
+.wa-input{flex:1;background:none;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--ink);resize:none;max-height:80px;line-height:1.4}
+.wa-input::placeholder{color:var(--ink-light)}
+.wa-emoji-btn,.wa-attach-btn{background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--ink-light);padding:2px;transition:transform .2s}
+.wa-emoji-btn:hover,.wa-attach-btn:hover{transform:scale(1.2)}
+.wa-send-btn{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#25D366,#128C7E);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(37,211,102,.4);transition:all .2s}
+.wa-send-btn:hover{transform:scale(1.1)}
+.wa-send-btn svg{width:18px;height:18px;fill:white}
+
+/* QUICK REPLIES */
+.wa-quick-replies{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;background:#f7f7f7;border-top:1px solid var(--border);flex-shrink:0}
+.wa-qr-btn{background:var(--white);border:1.5px solid #25D366;color:#128C7E;font-size:.72rem;font-weight:600;padding:5px 12px;border-radius:100px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.wa-qr-btn:hover{background:#25D366;color:white}
+
+/* EMOJI PICKER */
+.wa-emoji-picker{display:none;position:absolute;bottom:70px;left:10px;background:white;border-radius:12px;padding:10px;box-shadow:var(--shadow-lg);border:1px solid var(--border);width:260px;z-index:100}
+.wa-emoji-picker.open{display:block}
+.wa-emoji-grid{display:flex;flex-wrap:wrap;gap:4px}
+.wa-emoji-grid span{font-size:1.3rem;cursor:pointer;padding:3px;border-radius:6px;transition:background .15s}
+.wa-emoji-grid span:hover{background:#f0f0f0}
+
+/* FEATURES TAB */
+.wa-features-list{padding:14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;max-height:340px}
+.wa-feature-item{display:flex;align-items:center;gap:12px;padding:12px;background:#f9f9f9;border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:all .2s}
+.wa-feature-item:hover{background:var(--teal-pale);border-color:var(--border-teal)}
+.wa-feat-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#25D366,#128C7E);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.wa-feat-title{font-weight:600;font-size:.83rem;color:var(--ink)}
+.wa-feat-sub{font-size:.7rem;color:var(--ink-light);margin-top:1px}
+
+/* APPOINTMENTS TAB */
+.wa-appt-list{padding:12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;max-height:340px}
+.wa-appt-card{background:#f9f9f9;border:1px solid var(--border);border-radius:12px;padding:12px;transition:all .2s}
+.wa-appt-card:hover{border-color:#25D366;background:#f0fdf4}
+.wa-appt-doc{font-weight:700;font-size:.85rem;color:var(--ink)}
+.wa-appt-info{font-size:.75rem;color:var(--ink-light);margin-top:3px}
+.wa-appt-action{margin-top:8px;display:flex;gap:6px}
+.wa-appt-btn{font-size:.72rem;font-weight:600;padding:5px 12px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.wa-appt-btn-green{background:#25D366;color:white}
+.wa-appt-btn-green:hover{background:#128C7E}
+.wa-appt-btn-outline{background:white;color:#128C7E;border:1.5px solid #25D366!important;border:none}
+.wa-appt-btn-outline:hover{background:#f0fdf4}
+
+/* toast */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--ink);color:white;padding:14px 20px;border-radius:12px;font-size:.88rem;font-weight:500;z-index:9999;box-shadow:var(--shadow-lg);transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.23,1,.32,1)}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:960px){
+  .hero-inner,.hiw-grid,.emergency-inner{grid-template-columns:1fr;gap:48px}
+  .features-grid,.testimonials-track{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .stats-bar-inner{grid-template-columns:1fr 1fr}
+  .fw-content.active{grid-template-columns:1fr}
+  .hero-visual{display:none}
+  .sidebar{transform:translateX(-100%)}
+  .dash-main{margin-left:0}
+  .nav-links li:not(:last-child):not(:nth-last-child(2)){display:none}
+}
+@media(max-width:600px){
+  .features-grid,.testimonials-track,.footer-grid,.stats-bar-inner,.dash-grid,.book-grid,.vitals-grid{grid-template-columns:1fr}
+  .section{padding:64px 20px}
+  .hero{padding:120px 20px 64px}
+  .cta-card{padding:40px 24px}
+  .auth-card{padding:32px 24px}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<!-- ── RECORD VIEWER MODAL ── -->
+<div id="record-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--white);border-radius:20px;width:100%;max-width:780px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.3)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--border)">
+      <div style="font-weight:700;font-size:1rem;color:var(--ink)" id="modal-title">Record</div>
+      <button onclick="closeRecordModal()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--ink-light);line-height:1">×</button>
+    </div>
+    <div id="modal-body" style="flex:1;overflow:auto;padding:24px;text-align:center"></div>
+    <div style="padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end">
+      <button id="modal-download-btn" class="btn-secondary" style="padding:9px 20px;font-size:.88rem">⬇ Download</button>
+      <button onclick="closeRecordModal()" class="btn-primary" style="padding:9px 20px;font-size:.88rem">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── RECORD EDIT MODAL ── -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--white);border-radius:20px;width:100%;max-width:440px;box-shadow:0 24px 64px rgba(0,0,0,.3);padding:32px">
+    <div style="font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:20px">Edit Record</div>
+    <input type="hidden" id="edit-rec-id"/>
+    <div class="form-group"><label class="form-label">Record Name</label><input class="form-control" id="edit-rec-name"/></div>
+    <div class="form-group"><label class="form-label">Type</label>
+      <select class="form-control" id="edit-rec-type">
+        <option value="upload">Upload</option><option value="lab">Lab Report</option>
+        <option value="prescription">Prescription</option><option value="report">Report</option><option value="summary">Summary</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Hospital / Source</label><input class="form-control" id="edit-rec-hospital"/></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button onclick="saveEditRecord()" class="form-btn" style="margin-top:0">Save</button>
+      <button onclick="closeEditModal()" class="btn-secondary" style="padding:12px 20px">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── WHATSAPP FLOATING BUTTON + CHAT ── -->
+<div class="wa-fab" id="waFab">
+  <!-- Chat Window -->
+  <div class="wa-chat" id="waChat">
+    <!-- Header -->
+    <div class="wa-chat-head">
+      <div class="wa-chat-avatar">🏥</div>
+      <div>
+        <div class="wa-chat-name">E-Hospitee Support</div>
+        <div class="wa-chat-status"><span class="wa-online-dot"></span> Online • Typically replies instantly</div>
+      </div>
+      <button class="wa-chat-close" onclick="toggleChat()">✕</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="wa-chat-tabs">
+      <button class="wa-chat-tab active" onclick="switchWaTab('chat',this)">💬 Chat</button>
+      <button class="wa-chat-tab" onclick="switchWaTab('features',this)">⚡ Features</button>
+      <button class="wa-chat-tab" onclick="switchWaTab('appointments',this)">📅 Appointments</button>
+    </div>
+
+    <!-- CHAT TAB -->
+    <div class="wa-tab-content active" id="wa-tab-chat">
+      <div class="wa-messages" id="waMessages">
+        <div class="wa-msg wa-msg-in">
+          👋 Hi! Welcome to <strong>E-Hospitee</strong>. How can we help you today?
+          <div class="wa-msg-time">Just now</div>
+        </div>
+        <div class="wa-msg wa-msg-in">
+          You can ask me about appointments, health records, emergency services, or anything else!
+          <div class="wa-msg-time">Just now</div>
+        </div>
+      </div>
+
+      <!-- Quick Replies -->
+      <div class="wa-quick-replies">
+        <button class="wa-qr-btn" onclick="sendQuickReply('Book an appointment')">📅 Book Appointment</button>
+        <button class="wa-qr-btn" onclick="sendQuickReply('Emergency SOS help')">🚨 Emergency</button>
+        <button class="wa-qr-btn" onclick="sendQuickReply('View my health records')">📋 Health Records</button>
+        <button class="wa-qr-btn" onclick="sendQuickReply('Contact a doctor')">🩺 Contact Doctor</button>
+      </div>
+
+      <!-- Emoji Picker -->
+      <div class="wa-emoji-picker" id="waEmojiPicker">
+        <div class="wa-emoji-grid" id="waEmojiGrid"></div>
+      </div>
+
+      <!-- Input -->
+      <div class="wa-input-row" style="position:relative">
+        <div class="wa-input-wrap">
+          <button class="wa-emoji-btn" onclick="toggleEmojiPicker(event)" title="Emoji">😊</button>
+          <textarea class="wa-input" id="waInput" rows="1" placeholder="Type a message..." onkeydown="handleWaKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="wa-attach-btn" onclick="showToast('📎 File sharing coming soon!')" title="Attach">📎</button>
+        </div>
+        <button class="wa-send-btn" onclick="sendWaMessage()" title="Send">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- FEATURES TAB -->
+    <div class="wa-tab-content" id="wa-tab-features">
+      <div class="wa-features-list">
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Book an appointment')">
+          <div class="wa-feat-icon">📅</div>
+          <div><div class="wa-feat-title">Book Appointment</div><div class="wa-feat-sub">Find specialists & book slots instantly</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Show my health records')">
+          <div class="wa-feat-icon">📋</div>
+          <div><div class="wa-feat-title">Health Records</div><div class="wa-feat-sub">Access prescriptions, labs & reports</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Medication reminders')">
+          <div class="wa-feat-icon">💊</div>
+          <div><div class="wa-feat-title">Medication Reminders</div><div class="wa-feat-sub">Get daily reminders on WhatsApp</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Emergency SOS help')">
+          <div class="wa-feat-icon">🚨</div>
+          <div><div class="wa-feat-title">Emergency SOS</div><div class="wa-feat-sub">One-tap ambulance dispatch</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Lab reports update')">
+          <div class="wa-feat-icon">🧪</div>
+          <div><div class="wa-feat-title">Lab Report Alerts</div><div class="wa-feat-sub">Get notified when reports are ready</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Doctor consultation')">
+          <div class="wa-feat-icon">🩺</div>
+          <div><div class="wa-feat-title">Doctor Consultation</div><div class="wa-feat-sub">Chat with your doctor directly</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Blood donor request')">
+          <div class="wa-feat-icon">🩸</div>
+          <div><div class="wa-feat-title">Blood Donor Network</div><div class="wa-feat-sub">Find donors by blood type near you</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Ambulance tracking')">
+          <div class="wa-feat-icon">🚑</div>
+          <div><div class="wa-feat-title">Ambulance Tracking</div><div class="wa-feat-sub">Live location updates via WhatsApp</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS TAB -->
+    <div class="wa-tab-content" id="wa-tab-appointments">
+      <div class="wa-appt-list">
+        <div style="font-size:.75rem;font-weight:600;color:var(--ink-light);text-transform:uppercase;letter-spacing:.06em;padding:4px 0">Upcoming Appointments</div>
+        <div class="wa-appt-card">
+          <div class="wa-appt-doc">🫀 Dr. S. Rao — Cardiology</div>
+          <div class="wa-appt-info">Apollo Hospitals · 12 Mar 2026 · 10:30 AM</div>
+          <div class="wa-appt-action">
+            <button class="wa-appt-btn wa-appt-btn-green" onclick="showToast('Reminder set on WhatsApp!')">⏰ Set Reminder</button>
+            <button class="wa-appt-btn wa-appt-btn-outline" style="border:1.5px solid #25D366;background:white;color:#128C7E" onclick="showToast('Appointment cancelled.')">✕ Cancel</button>
+          </div>
+        </div>
+        <div class="wa-appt-card">
+          <div class="wa-appt-doc">🦴 Dr. P. Mehta — Orthopaedics</div>
+          <div class="wa-appt-info">KIMS Hospital · 18 Mar 2026 · 3:00 PM</div>
+          <div class="wa-appt-action">
+            <button class="wa-appt-btn wa-appt-btn-green" onclick="showToast('Reminder set on WhatsApp!')">⏰ Set Reminder</button>
+            <button class="wa-appt-btn wa-appt-btn-outline" style="border:1.5px solid #25D366;background:white;color:#128C7E" onclick="showToast('Appointment cancelled.')">✕ Cancel</button>
+          </div>
+        </div>
+        <div style="font-size:.75rem;font-weight:600;color:var(--ink-light);text-transform:uppercase;letter-spacing:.06em;padding:8px 0 4px">Quick Actions</div>
+        <button class="wa-appt-btn wa-appt-btn-green" style="width:100%;padding:11px;border-radius:10px;font-size:.85rem" onclick="showToast('Opening booking on WhatsApp...')">📅 Book New Appointment via WhatsApp</button>
+        <button onclick="openWhatsApp()" style="width:100%;padding:11px;border-radius:10px;font-size:.85rem;font-weight:600;background:white;border:1.5px solid #25D366;color:#128C7E;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:4px">
+          Open in WhatsApp ↗
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAB Button -->
+  <div style="position:relative">
+    <div class="wa-pulse"></div>
+    <button class="wa-btn" onclick="toggleChat()" id="waBtnMain" title="Chat on WhatsApp">
+      <div class="wa-dot" id="waDot">1</div>
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      <div class="wa-tooltip">Chat with E-Hospitee</div>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: LANDING
+══════════════════════════════════════ -->
+<div id="page-landing" class="page active">
+<nav id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="goPage('page-landing')">
+      <div class="logo-mark">🏥</div>
+      <span class="logo-text">E-Hospi<span>tee</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#emergency">Emergency</a></li>
+      <li><button onclick="goPage('page-login')" class="nav-btn-outline">Login</button></li>
+      <li><button onclick="goPage('page-register')" class="nav-btn">Get Started</button></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-pill"><div class="pill-dot"></div>Now live in Hyderabad — 50+ hospitals onboarded</div>
+      <h1 class="hero-title">Every hospital.<br>Every patient.<br><em>One platform.</em></h1>
+      <p class="hero-desc">E-Hospitee connects patients with hospitals across Hyderabad for appointments, health records, follow-ups, and emergency care — all in one seamless platform.</p>
+      <div class="hero-cta">
+        <button onclick="goPage('page-register')" class="btn-primary">🏥 Get Started Free</button>
+        <button onclick="goPage('page-login')" class="btn-secondary">👤 Sign In</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-num">75K+</div><div class="hero-stat-label">Patients registered</div></div>
+        <div><div class="hero-stat-num">150+</div><div class="hero-stat-label">Hospitals onboarded</div></div>
+        <div><div class="hero-stat-num">&lt;3 min</div><div class="hero-stat-label">Emergency response</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div style="position:relative">
+        <div class="tilt-wrapper" id="tiltCard">
+          <div class="dashboard-card">
+            <div class="dc-header">
+              <div><div class="dc-header-title">Hospital Dashboard</div><div class="dc-header-sub">Apollo Hospitals, Jubilee Hills — Today</div></div>
+              <div class="dc-dots"><div class="dc-dot"></div><div class="dc-dot"></div><div class="dc-dot"></div></div>
+            </div>
+            <div class="dc-body">
+              <div class="dc-grid">
+                <div class="dc-stat"><div class="dc-stat-num">48</div><div class="dc-stat-lbl">Today's Appointments</div></div>
+                <div class="dc-stat"><div class="dc-stat-num">12</div><div class="dc-stat-lbl">Beds Available</div></div>
+                <div class="dc-stat"><div class="dc-stat-num">3</div><div class="dc-stat-lbl">Emergency Alerts</div></div>
+                <div class="dc-stat"><div class="dc-stat-num">94%</div><div class="dc-stat-lbl">Show-up Rate</div></div>
+              </div>
+              <div style="font-size:.72rem;font-weight:600;color:var(--ink-light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Upcoming Appointments</div>
+              <div class="appt-item"><div class="appt-avatar" style="background:#FEF3C7">👨</div><div><div class="appt-name">Rajesh Kumar</div><div class="appt-spec">Cardiology · Dr. Rao</div></div><div class="appt-time">10:30 AM</div><div class="appt-status-dot" style="background:#34D399"></div></div>
+              <div class="appt-item"><div class="appt-avatar" style="background:#FEE2E2">👩</div><div><div class="appt-name">Priya Sharma</div><div class="appt-spec">Orthopaedics · Dr. Mehta</div></div><div class="appt-time">11:00 AM</div><div class="appt-status-dot" style="background:#34D399"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="float-badge fb-1"><div class="fb-icon">🩺</div><div class="fb-val">Digital Prescription</div><div class="fb-lbl">Sent to patient · 2 min ago</div></div>
+        <div class="float-badge fb-2"><div class="fb-icon">🚨</div><div class="fb-val">SOS Alert — 1.2 km</div><div class="fb-lbl">Ambulance dispatched ✓</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUSTED -->
+<div class="trusted">
+  <div class="trusted-inner">
+    <div class="trusted-label">Trusted by hospitals across Hyderabad</div>
+    <div class="trusted-logos">
+      <div class="trusted-logo">Apollo Hospitals</div><div class="trusted-logo">KIMS Hospital</div>
+      <div class="trusted-logo">Yashoda Health</div><div class="trusted-logo">Care Hospitals</div>
+      <div class="trusted-logo">Sunshine Hospitals</div><div class="trusted-logo">Medicover</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-head center">
+      <div class="chip">Everything You Need</div>
+      <h2 class="section-title">Healthcare, <em>completely reimagined</em></h2>
+      <p class="section-desc">From the first appointment to emergency care — E-Hospitee handles every touchpoint between patients and hospitals.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal"><div class="fc-icon">📅</div><div class="fc-title">Smart Appointment Booking</div><div class="fc-desc">Real-time specialist booking — no phone queues, no paper registers. Hospitals manage slots and no-shows automatically.</div><span class="fc-tag">Launch Feature</span></div>
+      <div class="feature-card reveal reveal-delay-1"><div class="fc-icon">📋</div><div class="fc-title">Unified Health Records</div><div class="fc-desc">Every prescription, lab report, and diagnosis in one secure, searchable timeline. Digital records pushed directly to patients.</div><span class="fc-tag">Launch Feature</span></div>
+      <div class="feature-card reveal reveal-delay-2"><div class="fc-icon">🔔</div><div class="fc-title">Follow-up & Prescription Tracking</div><div class="fc-desc">Automated follow-up reminders, medication schedules, and refill alerts. Post-care made effortless.</div><span class="fc-tag">Launch Feature</span></div>
+      <div class="feature-card reveal"><div class="fc-icon">🚑</div><div class="fc-title">Emergency & Ambulance</div><div class="fc-desc">One-tap SOS alerts family, nearby hospitals, and dispatches an ambulance with live tracking.</div><span class="fc-tag">Launch Feature</span></div>
+      <div class="feature-card reveal reveal-delay-1"><div class="fc-icon">🏥</div><div class="fc-title">Hospital Operations Dashboard</div><div class="fc-desc">Schedules, records, bed count, emergency inbox, and staff roles — all in one powerful dashboard.</div><span class="fc-tag">Launch Feature</span></div>
+      <div class="feature-card reveal reveal-delay-2"><div class="fc-icon">🩸</div><div class="fc-title">Blood Donor Network</div><div class="fc-desc">Donors matched to urgent blood requests by blood type and location. Manage inventory and instant alerts.</div><span class="fc-tag">Phase 2</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section-alt" id="how">
+  <div class="container">
+    <div class="section-head"><div class="chip">How It Works</div><h2 class="section-title">Seamless from <em>first tap</em> to final follow-up</h2><p class="section-desc">A single connected flow for patients and hospitals.</p></div>
+    <div class="hiw-grid">
+      <div class="hiw-steps">
+        <div class="hiw-step active" onclick="setStep(0,this)"><div class="step-num">1</div><div><div class="step-title">Patient searches for a specialist</div><div class="step-desc">Filter by specialty, location, and real-time availability.</div></div></div>
+        <div class="hiw-step" onclick="setStep(1,this)"><div class="step-num">2</div><div><div class="step-title">Books appointment — instantly confirmed</div><div class="step-desc">Select a slot, confirm, and receive a booking reference with reminders.</div></div></div>
+        <div class="hiw-step" onclick="setStep(2,this)"><div class="step-num">3</div><div><div class="step-title">Hospital manages the booking</div><div class="step-desc">Live calendar with patient details before arrival.</div></div></div>
+        <div class="hiw-step" onclick="setStep(3,this)"><div class="step-num">4</div><div><div class="step-title">Doctor issues physical prescription</div><div class="step-desc">Pushed directly to patient's app. No paper.</div></div></div>
+        <div class="hiw-step" onclick="setStep(4,this)"><div class="step-num">5</div><div><div class="step-title">Automatic follow-up reminders</div><div class="step-desc">Medication and appointment reminders daily.</div></div></div>
+      </div>
+      <div class="hiw-visual">
+        <div class="hiw-screen active" id="screen-0"><div class="hs-header"><span style="font-size:1.2rem">🔍</span><div class="hs-title">Find a Hospital</div></div><div class="hs-body"><div style="background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:.85rem;color:var(--ink-light);margin-bottom:16px">🔍 &nbsp;Cardiology, Hyderabad...</div><div style="display:flex;flex-direction:column;gap:10px"><div style="background:var(--white);border:1.5px solid var(--border-teal);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center"><div style="width:40px;height:40px;background:var(--teal-pale);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem">🏥</div><div style="flex:1"><div style="font-weight:600;font-size:.85rem">Apollo Hospitals</div><div style="font-size:.72rem;color:var(--ink-light)">Jubilee Hills · 1.2 km · ⭐ 4.8</div></div><div style="background:var(--teal);color:white;font-size:.7rem;padding:6px 10px;border-radius:8px;font-weight:600">Book</div></div><div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center"><div style="width:40px;height:40px;background:#FEF3C7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem">🏨</div><div style="flex:1"><div style="font-weight:600;font-size:.85rem">KIMS Hospital</div><div style="font-size:.72rem;color:var(--ink-light)">Secunderabad · 3.4 km · ⭐ 4.6</div></div><div style="background:var(--teal);color:white;font-size:.7rem;padding:6px 10px;border-radius:8px;font-weight:600">Book</div></div></div></div></div>
+        <div class="hiw-screen" id="screen-1"><div class="hs-header"><span style="font-size:1.2rem">📅</span><div class="hs-title">Book a Slot</div></div><div class="hs-body"><div style="font-size:.72rem;font-weight:600;color:var(--ink-light);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Dr. Rao — Cardiology</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px"><div style="text-align:center;padding:10px 6px;border:1.5px solid var(--teal);border-radius:10px;font-size:.75rem;font-weight:600;color:var(--teal);background:var(--teal-pale)">10:30 AM</div><div style="text-align:center;padding:10px 6px;border:1px solid var(--border);border-radius:10px;font-size:.75rem;color:var(--ink-mid)">11:00 AM</div><div style="text-align:center;padding:10px 6px;border:1px solid var(--border);border-radius:10px;font-size:.75rem;color:var(--ink-mid)">3:00 PM</div></div><div style="background:var(--teal-pale);border:1px solid var(--border-teal);border-radius:10px;padding:12px;margin-bottom:14px"><div style="font-size:.78rem;color:var(--teal);font-weight:600">✓ 10:30 AM · Thursday, 12 Mar · ₹600</div></div><div style="background:var(--teal);color:white;text-align:center;padding:12px;border-radius:10px;font-weight:600;font-size:.85rem">Confirm Booking →</div></div></div>
+        <div class="hiw-screen" id="screen-2"><div class="hs-header"><span style="font-size:1.2rem">📊</span><div class="hs-title">Hospital Dashboard</div></div><div class="hs-body"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px"><div style="background:var(--teal-pale);border:1px solid var(--border-teal);border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.4rem;font-weight:800;color:var(--teal);font-family:'Playfair Display',serif">48</div><div style="font-size:.62rem;color:var(--ink-light)">Appointments</div></div><div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.4rem;font-weight:800;color:var(--amber);font-family:'Playfair Display',serif">3</div><div style="font-size:.62rem;color:var(--ink-light)">Pending</div></div><div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.4rem;font-weight:800;color:#16A34A;font-family:'Playfair Display',serif">12</div><div style="font-size:.62rem;color:var(--ink-light)">Free Beds</div></div></div><div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--cream);border-radius:10px"><div style="width:7px;height:7px;border-radius:50%;background:#34D399;flex-shrink:0"></div><span style="font-size:.8rem;font-weight:500;flex:1">Rajesh Kumar</span><span style="font-size:.72rem;color:var(--teal);font-weight:600">10:30</span></div><div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--cream);border-radius:10px"><div style="width:7px;height:7px;border-radius:50%;background:#34D399;flex-shrink:0"></div><span style="font-size:.8rem;font-weight:500;flex:1">Priya Sharma</span><span style="font-size:.72rem;color:var(--teal);font-weight:600">11:00</span></div></div></div></div>
+        <div class="hiw-screen" id="screen-3"><div class="hs-header"><span style="font-size:1.2rem">🩺</span><div class="hs-title">Digital Prescription</div></div><div class="hs-body"><div style="border:1px solid var(--border);border-radius:12px;padding:16px"><div style="font-weight:700;font-size:.88rem;margin-bottom:4px">Dr. S. Rao — Cardiology</div><div style="font-size:.7rem;color:var(--ink-light);margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)">12 Mar 2026</div><div style="font-size:.8rem;margin-bottom:6px"><span style="font-weight:600">1. Ecosprin 75mg</span> — 1 tablet daily</div><div style="font-size:.8rem;margin-bottom:12px"><span style="font-weight:600">2. Atorvastatin 10mg</span> — 1 tablet nightly</div><div style="background:var(--teal-pale);border:1px solid var(--border-teal);border-radius:8px;padding:10px;font-size:.72rem;color:var(--teal)">📱 Sent to patient's E-Hospitee app</div></div></div></div>
+        <div class="hiw-screen" id="screen-4"><div class="hs-header"><span style="font-size:1.2rem">🔔</span><div class="hs-title">Health Timeline</div></div><div class="hs-body"><div style="display:flex;flex-direction:column;gap:10px"><div style="display:flex;gap:10px;align-items:flex-start"><div style="width:34px;height:34px;border-radius:50%;background:#FEF3C7;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">⏰</div><div style="background:var(--amber-pale);border:1px solid #FDE68A;border-radius:10px;padding:10px;flex:1"><div style="font-weight:600;font-size:.8rem;color:var(--amber)">Follow-up Reminder</div><div style="font-size:.72rem;color:var(--ink-light)">Dr. Rao · Tomorrow 10:30 AM</div></div></div><div style="display:flex;gap:10px;align-items:flex-start"><div style="width:34px;height:34px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">💊</div><div style="background:var(--teal-pale);border:1px solid var(--border-teal);border-radius:10px;padding:10px;flex:1"><div style="font-weight:600;font-size:.8rem;color:var(--teal)">Medication Reminder</div><div style="font-size:.72rem;color:var(--ink-light)">Ecosprin 75mg · Take now</div></div></div></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section class="section" id="forwho">
+  <div class="container">
+    <div class="section-head center"><div class="chip">Built For Everyone</div><h2 class="section-title">One platform, <em>two powerful sides</em></h2></div>
+    <div class="for-who-tabs">
+      <button class="fw-tab active" onclick="switchTab('patient',this)">👤 For Patients</button>
+      <button class="fw-tab" onclick="switchTab('hospital',this)">🏥 For Hospitals</button>
+    </div>
+    <div class="fw-content active" id="fw-patient">
+      <div class="fw-card reveal"><div class="fw-icon">📅</div><div class="fw-title">Book Any Specialist Near You</div><div class="fw-desc">Search hospitals and doctors by specialty, distance, and real-time availability. Book in under 60 seconds.</div><span class="fw-badge">Launch Feature</span></div>
+      <div class="fw-card reveal reveal-delay-1"><div class="fw-icon">🗂️</div><div class="fw-title">Your Complete Health Record</div><div class="fw-desc">Every prescription, lab report, and diagnosis stored securely. Share records instantly with any doctor.</div><span class="fw-badge">Launch Feature</span></div>
+      <div class="fw-card reveal"><div class="fw-icon">💊</div><div class="fw-title">Never Miss a Follow-up Again</div><div class="fw-desc">Automatic reminders for follow-up appointments and daily medications. Lab results appear instantly.</div><span class="fw-badge">Launch Feature</span></div>
+      <div class="fw-card reveal reveal-delay-1"><div class="fw-icon">🆘</div><div class="fw-title">Emergency Help in One Tap</div><div class="fw-desc">Press SOS — family alerted, nearest hospitals notified, and ambulance dispatched with live tracking.</div><span class="fw-badge">Launch Feature</span></div>
+    </div>
+    <div class="fw-content" id="fw-hospital">
+      <div class="fw-card reveal"><div class="fw-icon">📊</div><div class="fw-title">End-to-End Appointment Management</div><div class="fw-desc">Live calendar across all doctors. Manage slots, cancellations, walk-ins, and no-shows from one dashboard.</div><span class="fw-badge">Launch Feature</span></div>
+      <div class="fw-card reveal reveal-delay-1"><div class="fw-icon">👁️</div><div class="fw-title">Complete Patient Record Access</div><div class="fw-desc">View full patient history before they arrive. Issue digital prescriptions directly to the patient's app.</div><span class="fw-badge">Launch Feature</span></div>
+      <div class="fw-card reveal"><div class="fw-icon">🚑</div><div class="fw-title">Emergency Operations Centre</div><div class="fw-desc">Real-time emergency inbox with SOS alerts. Dispatch ambulances. Update live bed count on the map.</div><span class="fw-badge">Launch Feature</span></div>
+      <div class="fw-card reveal reveal-delay-1"><div class="fw-icon">📈</div><div class="fw-title">Analytics That Drive Decisions</div><div class="fw-desc">Appointment volume, doctor utilisation, no-show rates, and revenue — all in a live dashboard.</div><span class="fw-badge">Phase 2</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- EMERGENCY -->
+<section class="emergency-section" id="emergency">
+  <div class="emergency-inner">
+    <div>
+      <div class="em-chip">🚨 Emergency Services</div>
+      <h2 class="emergency-title">When every second matters, E-Hospitee doesn't make you wait.</h2>
+      <p class="emergency-desc">A complete emergency response system built into every patient's pocket — and every hospital's dashboard.</p>
+      <div class="em-features">
+        <div class="em-feature"><div class="em-check">✓</div><div><div class="em-feat-title">One-tap SOS with automatic alerts</div><div class="em-feat-desc">Family notified, nearest hospitals alerted, and ambulance dispatched — one tap.</div></div></div>
+        <div class="em-feature"><div class="em-check">✓</div><div><div class="em-feat-title">Live ambulance tracking</div><div class="em-feat-desc">Patient and family track the ambulance in real time on a live map.</div></div></div>
+        <div class="em-feature"><div class="em-check">✓</div><div><div class="em-feat-title">Offline Medical ID</div><div class="em-feat-desc">Blood group, allergies, conditions accessible without internet or login.</div></div></div>
+        <div class="em-feature"><div class="em-check">✓</div><div><div class="em-feat-title">Hospital sees patient data before arrival</div><div class="em-feat-desc">Receiving hospital gets the patient's Medical ID the moment SOS is triggered.</div></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="sos-phone">
+        <div class="sos-screen">
+          <div style="font-size:.72rem;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:4px">E-HOSPITEE EMERGENCY</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.8);margin-bottom:20px">Press SOS to alert family & hospitals</div>
+          <div class="sos-btn-wrap"><div class="sos-ring"></div><div class="sos-ring-2"></div><div class="sos-btn-main">SOS<small>Tap to Alert</small></div></div>
+          <div class="sos-info">Your GPS location will be shared automatically</div>
+        </div>
+        <div class="sos-cards">
+          <div class="sos-card"><div class="sos-card-icon">📍</div><div class="sos-card-val">1.2 km</div><div class="sos-card-lbl">Nearest Hospital</div></div>
+          <div class="sos-card"><div class="sos-card-icon">🚑</div><div class="sos-card-val">4 min</div><div class="sos-card-lbl">Ambulance ETA</div></div>
+          <div class="sos-card"><div class="sos-card-icon">👨‍👩‍👧</div><div class="sos-card-val">Notified</div><div class="sos-card-lbl">Family Alerted</div></div>
+          <div class="sos-card"><div class="sos-card-icon">🏥</div><div class="sos-card-val">3 Ready</div><div class="sos-card-lbl">Hospitals Alerted</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="stat-block"><div class="stat-block-num">75,000+</div><div class="stat-block-lbl">Patients registered</div></div>
+    <div class="stat-block"><div class="stat-block-num">150+</div><div class="stat-block-lbl">Hospitals onboarded</div></div>
+    <div class="stat-block"><div class="stat-block-num">20,000+</div><div class="stat-block-lbl">Appointments monthly</div></div>
+    <div class="stat-block"><div class="stat-block-num">&lt;3 min</div><div class="stat-block-lbl">Emergency response time</div></div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="section section-teal">
+  <div class="container">
+    <div class="section-head center"><div class="chip">Testimonials</div><h2 class="section-title">Loved by patients <em>&amp; hospitals</em></h2></div>
+    <div class="testimonials-track">
+      <div class="testimonial-card reveal"><div class="tc-stars">★★★★★</div><div class="tc-quote">"I managed my father's bypass surgery follow-ups entirely through E-Hospitee. The medication reminders saved me so much stress."</div><div class="tc-author"><div class="tc-avatar">👩</div><div><div class="tc-name">Sunita Reddy</div><div class="tc-role">Patient — Gachibowli, Hyderabad</div></div></div></div>
+      <div class="testimonial-card reveal reveal-delay-1"><div class="tc-stars">★★★★★</div><div class="tc-quote">"Our no-show rate dropped from 28% to 9% in the first month. The automatic reminders changed everything."</div><div class="tc-author"><div class="tc-avatar">👨‍⚕️</div><div><div class="tc-name">Dr. Arvind Mehta</div><div class="tc-role">Medical Director — Sunshine Hospital</div></div></div></div>
+      <div class="testimonial-card reveal reveal-delay-2"><div class="tc-stars">★★★★★</div><div class="tc-quote">"The SOS feature saved my uncle's life. Within 3 minutes the ambulance was dispatched and the hospital had his medical details ready."</div><div class="tc-author"><div class="tc-avatar">👦</div><div><div class="tc-name">Karthik Nair</div><div class="tc-role">Patient Family — Banjara Hills, Hyderabad</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <div class="cta-card reveal">
+      <h2 class="cta-title">Ready to transform your hospital's <em>patient experience?</em></h2>
+      <p class="cta-desc">Join 150+ hospitals across Hyderabad. Free for 6 months, no contract. Live in under 30 minutes.</p>
+      <div class="cta-form">
+        <input type="text" class="form-input" placeholder="Hospital name"/>
+        <input type="tel" class="form-input" placeholder="Your mobile number" style="min-width:200px"/>
+        <button class="btn-primary" onclick="handleCTA(this)">Request Demo →</button>
+      </div>
+      <p class="cta-note">🔒 Your details are safe. We'll call within 24 hours.</p>
+      <div id="cta-success" style="display:none;margin-top:20px;background:var(--teal-pale);border:1px solid var(--border-teal);border-radius:12px;padding:16px;color:var(--teal);font-weight:600">✅ Thank you! Our team will reach out within 24 hours.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="logo-mark">🏥</div><span style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:white">E-Hospi<span style="color:#99F6E4">tee</span></span></div>
+        <p style="font-size:.85rem;line-height:1.7;max-width:260px;color:rgba(255,255,255,.55)">Connecting Hyderabad's healthcare ecosystem — one appointment, record, and emergency at a time.</p>
+      </div>
+      <div><div class="footer-heading">Platform</div><ul class="footer-links"><li><a href="#features">Features</a></li><li><a href="#how">How It Works</a></li><li><a href="#emergency">Emergency</a></li></ul></div>
+      <div><div class="footer-heading">Access</div><ul class="footer-links"><li><a onclick="goPage('page-login')" style="cursor:pointer">Patient Login</a></li><li><a onclick="goPage('page-login')" style="cursor:pointer">Hospital Login</a></li><li><a onclick="goPage('page-register')" style="cursor:pointer">Register</a></li></ul></div>
+      <div><div class="footer-heading">Company</div><ul class="footer-links"><li><a href="#">About E-Hospitee</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li><li><a href="#">Contact Us</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <div style="font-size:.8rem;color:rgba(255,255,255,.35)">© 2026 E-Hospitee. Built in Hyderabad, India. 🇮🇳</div>
+      <div class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Security</a></div>
+    </div>
+  </div>
+</footer>
+</div><!-- /page-landing -->
+
+<!-- ══════════════════════════════════════
+     PAGE: REGISTER
+══════════════════════════════════════ -->
+<div id="page-register" class="page">
+<nav style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)">
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="goPage('page-landing')"><div class="logo-mark">🏥</div><span class="logo-text">E-Hospi<span>tee</span></span></a>
+    <ul class="nav-links"><li><button onclick="goPage('page-login')" class="nav-btn-outline">Sign In Instead</button></li></ul>
+  </div>
+</nav>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo"><div class="logo-mark" style="width:44px;height:44px;font-size:1.3rem">🏥</div><span class="logo-text" style="font-size:1.7rem">E-Hospi<span>tee</span></span></div>
+    <h2 class="auth-title">Create your account</h2>
+    <p class="auth-sub">Join thousands of patients and hospitals across Hyderabad</p>
+
+    <!-- Role selector -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:.82rem;font-weight:600;color:var(--ink-mid);margin-bottom:10px">I am registering as:</div>
+      <div class="role-cards">
+        <div class="role-card selected" id="role-patient" onclick="selectRole('patient')">
+          <div class="role-card-icon">👤</div>
+          <div class="role-card-title">Patient</div>
+          <div class="role-card-sub">Book appointments & manage records</div>
+        </div>
+        <div class="role-card" id="role-hospital" onclick="selectRole('hospital')">
+          <div class="role-card-icon">🏥</div>
+          <div class="role-card-title">Hospital</div>
+          <div class="role-card-sub">Manage patients & operations</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patient form -->
+    <div id="reg-patient-form">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">First Name</label><input class="form-control" type="text" placeholder="Rajesh"/></div>
+        <div class="form-group"><label class="form-label">Last Name</label><input class="form-control" type="text" placeholder="Kumar"/></div>
+      </div>
+      <div class="form-group"><label class="form-label">Mobile Number</label><input class="form-control" type="tel" placeholder="+91 98765 43210"/></div>
+      <div class="form-group"><label class="form-label">Email Address</label><input class="form-control" type="email" placeholder="rajesh@email.com"/></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-control" type="date"/></div>
+        <div class="form-group"><label class="form-label">Blood Group</label>
+          <select class="form-control"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-control" type="password" placeholder="Create a strong password"/></div>
+      <div class="form-group"><label class="form-label">Confirm Password</label><input class="form-control" type="password" placeholder="Repeat password"/></div>
+    </div>
+
+    <!-- Hospital form -->
+    <div id="reg-hospital-form" style="display:none">
+      <div class="form-group"><label class="form-label">Hospital Name</label><input class="form-control" type="text" placeholder="Apollo Hospitals"/></div>
+      <div class="form-group"><label class="form-label">Registration Number</label><input class="form-control" type="text" placeholder="MCI-HYD-2024-XXXXX"/></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">City</label><input class="form-control" type="text" placeholder="Hyderabad"/></div>
+        <div class="form-group"><label class="form-label">Pincode</label><input class="form-control" type="text" placeholder="500032"/></div>
+      </div>
+      <div class="form-group"><label class="form-label">Contact Person</label><input class="form-control" type="text" placeholder="Dr. Name / Admin Name"/></div>
+      <div class="form-group"><label class="form-label">Official Email</label><input class="form-control" type="email" placeholder="admin@hospital.com"/></div>
+      <div class="form-group"><label class="form-label">Phone Number</label><input class="form-control" type="tel" placeholder="+91 40 XXXX XXXX"/></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-control" type="password" placeholder="Create a strong password"/></div>
+    </div>
+
+    <button class="form-btn" id="reg-btn" onclick="handleRegister()">Create Account →</button>
+    <div class="auth-switch">Already have an account? <a onclick="goPage('page-login')">Sign in here</a></div>
+  </div>
+</div>
+</div><!-- /page-register -->
+
+<!-- ══════════════════════════════════════
+     PAGE: LOGIN
+══════════════════════════════════════ -->
+<div id="page-login" class="page">
+<nav style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)">
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="goPage('page-landing')"><div class="logo-mark">🏥</div><span class="logo-text">E-Hospi<span>tee</span></span></a>
+    <ul class="nav-links"><li><button onclick="goPage('page-register')" class="nav-btn">Create Account</button></li></ul>
+  </div>
+</nav>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo"><div class="logo-mark" style="width:44px;height:44px;font-size:1.3rem">🏥</div><span class="logo-text" style="font-size:1.7rem">E-Hospi<span>tee</span></span></div>
+    <h2 class="auth-title">Welcome back</h2>
+    <p class="auth-sub">Sign in to your E-Hospitee account</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchLoginTab('patient',this)">👤 Patient</button>
+      <button class="auth-tab" onclick="switchLoginTab('hospital',this)">🏥 Hospital</button>
+    </div>
+
+    <div id="login-patient">
+      <div class="form-group"><label class="form-label">Email</label><input class="form-control" type="email" placeholder="you@email.com" id="login-id"/></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-control" type="password" placeholder="Enter your password" id="login-pw"/></div>
+      <div style="text-align:right;margin-bottom:16px"><a style="font-size:.82rem;color:var(--teal);font-weight:600;cursor:pointer">Forgot password?</a></div>
+      <button class="form-btn" id="patient-login-btn" onclick="this.style.opacity='0.7';this.textContent='Opening…';handleLogin('patient')">Sign In as Patient →</button>
+    </div>
+
+    <div id="login-hospital" style="display:none">
+      <div class="form-group"><label class="form-label">Hospital Email</label><input class="form-control" type="email" placeholder="admin@hospital.com" id="hosp-login-id"/></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-control" type="password" placeholder="Enter your password" id="hosp-login-pw"/></div>
+      <div style="text-align:right;margin-bottom:16px"><a style="font-size:.82rem;color:var(--teal);font-weight:600;cursor:pointer">Forgot password?</a></div>
+      <button class="form-btn" onclick="handleLogin('hospital')">Sign In as Hospital →</button>
+    </div>
+
+    <div class="auth-switch">Don't have an account? <a onclick="goPage('page-register')">Sign up here</a></div>
+  </div>
+</div>
+</div><!-- /page-login -->
+
+<!-- ══════════════════════════════════════
+     PAGE: PATIENT DASHBOARD
+══════════════════════════════════════ -->
+<div id="page-patient" class="page">
+<nav id="patient-nav" style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)">
+  <div class="nav-inner" style="max-width:100%;padding:0 28px">
+    <a class="nav-logo" style="cursor:default"><div class="logo-mark">🏥</div><span class="logo-text">E-Hospi<span>tee</span></span></a>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="font-size:.85rem;color:var(--ink-mid)">Welcome, <strong id="patient-name"></strong> 👋</div>
+      <button onclick="goPage('page-landing')" class="nav-btn-outline" style="padding:7px 16px!important;font-size:.82rem!important;background:transparent;color:var(--teal);border:1.5px solid var(--teal);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600">Sign Out</button>
+    </div>
+  </div>
+</nav>
+<div class="dash-wrap">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div style="padding:12px 12px 4px;display:flex;align-items:center;gap:10px">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--teal-pale);border:2px solid var(--border-teal);display:flex;align-items:center;justify-content:center;font-size:1.1rem">👤</div>
+        <div><div style="font-weight:600;font-size:.85rem" id="sidebar-patient-name"></div><div style="font-size:.72rem;color:var(--ink-light)" id="sidebar-patient-id">—</div></div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <button class="sidebar-item active" onclick="showPanel('p-overview',this)"><span class="si-icon">🏠</span> Overview</button>
+      <button class="sidebar-item" onclick="showPanel('p-appointments',this)"><span class="si-icon">📅</span> Appointments <span class="sidebar-badge" id="appt-badge" style="display:none"></span></button>
+      <button class="sidebar-item" onclick="showPanel('p-records',this)"><span class="si-icon">📋</span> Health Records</button>
+      <button class="sidebar-item" onclick="showPanel('p-medications',this)"><span class="si-icon">💊</span> Medications</button>
+      <button class="sidebar-item" onclick="showPanel('p-book',this)"><span class="si-icon">🔍</span> Book Appointment</button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Health</div>
+      <button class="sidebar-item" onclick="showPanel('p-vitals',this)"><span class="si-icon">❤️</span> Vitals & Reports</button>
+      <button class="sidebar-item" onclick="showPanel('p-emergency',this)"><span class="si-icon">🚨</span> Emergency SOS</button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Account</div>
+      <button class="sidebar-item" onclick="showPanel('p-profile',this)"><span class="si-icon">⚙️</span> My Profile</button>
+    </div>
+  </div>
+  <div class="dash-main">
+
+    <!-- OVERVIEW -->
+    <div class="dash-panel active" id="p-overview">
+      <div class="dash-header"><div class="dash-title"><span id="dash-greeting"></span> 👋</div><div class="dash-sub" id="dash-date-sub"> · Here's your health summary</div></div>
+      <div class="dash-grid">
+        <div class="dash-stat-card"><div class="dsc-icon">📅</div><div class="dsc-num" id="stat-upcoming">0</div><div class="dsc-lbl">Upcoming Appointments</div></div>
+        <div class="dash-stat-card"><div class="dsc-icon">📋</div><div class="dsc-num" id="stat-records">0</div><div class="dsc-lbl">Health Records</div></div>
+        <div class="dash-stat-card"><div class="dsc-icon">💊</div><div class="dsc-num" id="stat-meds">0</div><div class="dsc-lbl">Active Medications</div></div>
+        <div class="dash-stat-card"><div class="dsc-icon">🩺</div><div class="dsc-num">0</div><div class="dsc-lbl">Total Visits</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="dash-card">
+          <div class="dash-card-title">Upcoming Appointments <a onclick="showPanel('p-appointments',null)">View All</a></div>
+          <div id="overview-upcoming"></div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-title">Today's Medications</div>
+          <div id="overview-meds"></div>
+        </div>
+      </div>
+      <div class="dash-card" style="margin-top:0">
+        <div class="dash-card-title">Recent Health Records <a onclick="showPanel('p-records',null)">View All</a></div>
+        <div id="overview-records"></div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="dash-panel" id="p-appointments">
+      <div class="dash-header"><div class="dash-title">My Appointments</div><div class="dash-sub">All your past and upcoming appointments</div></div>
+      <div class="dash-card"><div class="dash-card-title">Upcoming</div><div id="appt-upcoming"><div style="color:var(--ink-light);font-size:.85rem;padding:12px 0">Loading...</div></div></div>
+      <div class="dash-card"><div class="dash-card-title">Past Visits</div><div id="appt-past"><div style="color:var(--ink-light);font-size:.85rem;padding:12px 0">Loading...</div></div></div>
+      <button class="btn-primary" onclick="showPanel('p-book',null)">+ Book New Appointment</button>
+    </div>
+
+    <!-- RECORDS -->
+    <div class="dash-panel" id="p-records">
+      <div class="dash-header"><div class="dash-title">Health Records</div><div class="dash-sub">Your complete medical history</div></div>
+      <div class="dash-card"><div class="dash-card-title">All Records</div><div id="records-list"><div style="color:var(--ink-light);font-size:.85rem;padding:12px 0">Loading...</div></div></div>
+      <label class="btn-secondary" style="cursor:pointer;display:inline-flex;align-items:center;gap:8px">
+        📤 Upload Record
+        <input type="file" style="display:none" onchange="uploadRecord(this)"/>
+      </label>
+    </div>
+
+    <!-- MEDICATIONS -->
+    <div class="dash-panel" id="p-medications">
+      <div class="dash-header"><div class="dash-title">My Medications</div><div class="dash-sub">Active prescriptions and reminder schedule</div></div>
+      <div class="dash-card"><div class="dash-card-title">Active Medications</div><div id="medications-list"><div style="color:var(--ink-light);font-size:.85rem;padding:12px 0">Loading...</div></div></div>
+      <div class="dash-card">
+        <div class="dash-card-title">Add Medication</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <input class="form-control" id="new-med-name" placeholder="Medicine name"/>
+          <input class="form-control" id="new-med-dose" placeholder="Dose (e.g. 1 tablet)"/>
+          <input class="form-control" id="new-med-freq" placeholder="Frequency"/>
+          <input class="form-control" id="new-med-time" placeholder="Time (e.g. 8:00 AM)"/>
+        </div>
+        <button class="btn-primary" style="padding:10px 20px;font-size:.88rem" onclick="addMedication()">+ Add Medication</button>
+      </div>
+    </div>
+
+    <!-- BOOK -->
+    <div class="dash-panel" id="p-book">
+      <div class="dash-header"><div class="dash-title">Book Appointment</div><div class="dash-sub">Find a specialist and book a slot instantly</div></div>
+      <div class="dash-card" style="margin-bottom:20px">
+        <div class="dash-card-title">Search</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+          <div class="form-group" style="margin:0"><input class="form-control" placeholder="🔍 Specialty or doctor name"/></div>
+          <div class="form-group" style="margin:0"><select class="form-control"><option>Any Location</option><option>Jubilee Hills</option><option>Secunderabad</option><option>Banjara Hills</option></select></div>
+          <button class="btn-primary" style="height:46px;border-radius:10px">Search</button>
+        </div>
+      </div>
+      <div class="book-grid">
+        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div><div class="book-hosp">Apollo Hospitals</div><div class="book-spec">Cardiology · Dr. S. Rao</div><div class="book-slots">✓ 3 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointment('Dr. S. Rao','Cardiology','Apollo Hospitals',600)">Book Now</button></div>
+        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏨</div><div class="book-hosp">KIMS Hospital</div><div class="book-spec">Orthopaedics · Dr. P. Mehta</div><div class="book-slots">✓ 5 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointment('Dr. P. Mehta','Orthopaedics','KIMS Hospital',500)">Book Now</button></div>
+        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏩</div><div class="book-hosp">Yashoda Hospital</div><div class="book-spec">Neurology · Dr. V. Iyer</div><div class="book-slots">✓ 2 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointment('Dr. V. Iyer','Neurology','Yashoda Hospital',700)">Book Now</button></div>
+        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div><div class="book-hosp">Care Hospitals</div><div class="book-spec">General Medicine · Dr. R. Gupta</div><div class="book-slots">✓ 8 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointment('Dr. R. Gupta','General Medicine','Care Hospitals',400)">Book Now</button></div>
+        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏨</div><div class="book-hosp">Sunshine Hospital</div><div class="book-spec">Dermatology · Dr. A. Sharma</div><div class="book-slots">✓ 4 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointment('Dr. A. Sharma','Dermatology','Sunshine Hospital',450)">Book Now</button></div>
+        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div><div class="book-hosp">Medicover</div><div class="book-spec">Diabetology · Dr. K. Nair</div><div class="book-slots">✓ 6 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointment('Dr. K. Nair','Diabetology','Medicover',500)">Book Now</button></div>
+      </div>
+    </div>
+
+    <!-- VITALS -->
+    <div class="dash-panel" id="p-vitals">
+      <div class="dash-header"><div class="dash-title">Vitals & Reports</div><div class="dash-sub">Your latest health measurements</div></div>
+      <div class="vitals-grid" style="margin-bottom:20px">
+        <div class="vital-card"><div class="vital-icon">❤️</div><div class="vital-val" id="stat-heartrate">72 bpm</div><div class="vital-lbl">Heart Rate</div></div>
+        <div class="vital-card"><div class="vital-icon">🩸</div><div class="vital-val" id="stat-bp">120/80</div><div class="vital-lbl">Blood Pressure</div></div>
+        <div class="vital-card"><div class="vital-icon">🌡️</div><div class="vital-val" id="stat-temp">36.8°C</div><div class="vital-lbl">Body Temp</div></div>
+        <div class="vital-card"><div class="vital-icon">💉</div><div class="vital-val" id="stat-sugar">98 mg/dL</div><div class="vital-lbl">Blood Sugar</div></div>
+        <div class="vital-card"><div class="vital-icon">⚖️</div><div class="vital-val" id="stat-weight">72 kg</div><div class="vital-lbl">Weight</div></div>
+        <div class="vital-card"><div class="vital-icon">🫁</div><div class="vital-val" id="stat-spo2">98%</div><div class="vital-lbl">SpO2</div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">Update Vitals</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+          <input class="form-control" id="v-hr" placeholder="Heart Rate (e.g. 72 bpm)"/>
+          <input class="form-control" id="v-bp" placeholder="BP (e.g. 120/80)"/>
+          <input class="form-control" id="v-temp" placeholder="Temp (e.g. 36.8°C)"/>
+          <input class="form-control" id="v-sugar" placeholder="Sugar (e.g. 98 mg/dL)"/>
+          <input class="form-control" id="v-weight" placeholder="Weight (e.g. 72 kg)"/>
+          <input class="form-control" id="v-spo2" placeholder="SpO2 (e.g. 98%)"/>
+        </div>
+        <button class="btn-primary" style="padding:10px 20px;font-size:.88rem" onclick="saveVitals()">💾 Save Vitals</button>
+      </div>
+    </div>
+
+    <!-- EMERGENCY -->
+    <div class="dash-panel" id="p-emergency">
+      <div class="dash-header"><div class="dash-title">Emergency SOS</div><div class="dash-sub">One-tap emergency response system</div></div>
+      <div class="dash-card" style="text-align:center;padding:48px">
+        <div style="position:relative;display:inline-block;margin-bottom:28px">
+          <div style="position:absolute;inset:-20px;border-radius:50%;border:2px solid rgba(220,38,38,.3);animation:sos-ring 2s ease-out infinite"></div>
+          <div style="position:absolute;inset:-35px;border-radius:50%;border:2px solid rgba(220,38,38,.15);animation:sos-ring 2s .5s ease-out infinite"></div>
+          <button onclick="triggerSOS()" style="width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#FF6B6B,#DC2626 70%);border:none;cursor:pointer;font-weight:800;font-size:1.5rem;color:white;box-shadow:0 0 0 8px rgba(220,38,38,.15),0 8px 32px rgba(220,38,38,.4);position:relative;z-index:1;transition:transform .2s" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">SOS</button>
+        </div>
+        <div style="font-size:1rem;font-weight:600;color:var(--ink);margin-bottom:8px">Tap SOS to trigger emergency response</div>
+        <div style="font-size:.85rem;color:var(--ink-light)">Your family, nearby hospitals, and ambulance will be notified instantly.</div>
+        <div id="sos-log" style="margin-top:20px;text-align:left;max-width:400px;margin-left:auto;margin-right:auto"></div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="dash-panel" id="p-profile">
+      <div class="dash-header"><div class="dash-title">My Profile</div><div class="dash-sub">Manage your personal and medical information</div></div>
+      <div class="dash-card" id="profile-form-section">
+        <div class="dash-card-title">Personal Information</div>
+        <div class="form-row"><div class="form-group"><label class="form-label">First Name</label><input class="form-control" id="prof-fname" value=""/></div><div class="form-group"><label class="form-label">Last Name</label><input class="form-control" id="prof-lname" value=""/></div></div>
+        <div class="form-row"><div class="form-group"><label class="form-label">Date of Birth</label><input class="form-control" type="date" id="prof-dob" value=""/></div><div class="form-group"><label class="form-label">Blood Group</label><select class="form-control" id="prof-blood"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div></div>
+        <div class="form-group"><label class="form-label">Mobile</label><input class="form-control" id="prof-mobile" value=""/></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-control" id="prof-email" value=""/></div>
+        <div class="form-group"><label class="form-label">Known Allergies</label><input class="form-control" id="prof-allergies" value=""/></div>
+        <div class="form-group"><label class="form-label">Emergency Contact</label><input class="form-control" id="prof-emergency" value=""/></div>
+        <button class="form-btn" style="width:auto;padding:12px 28px" onclick="saveProfile()">💾 Save to Database</button>
+      </div>
+    </div>
+
+  </div><!-- /dash-main -->
+</div><!-- /dash-wrap -->
+</div><!-- /page-patient -->
+
+<!-- ══════════════════════════════════════
+     PAGE: HOSPITAL DASHBOARD
+══════════════════════════════════════ -->
+<div id="page-hospital" class="page">
+<nav id="hosp-nav" class="hosp-nav" style="position:fixed;top:0;left:0;right:0;z-index:1000;backdrop-filter:blur(20px)">
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="goPage('page-landing')"><div class="logo-mark">🏥</div><span class="logo-text">E-Hospi<span>tee</span></span></a>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="font-size:.85rem;color:rgba(255,255,255,.8)">Apollo Hospitals, Jubilee Hills</div>
+      <button onclick="goPage('page-landing')" style="padding:7px 16px;background:rgba(255,255,255,.1);color:white;border:1px solid rgba(255,255,255,.25);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.82rem">Sign Out</button>
+    </div>
+  </div>
+</nav>
+<div class="dash-wrap">
+  <div class="sidebar hosp-sidebar">
+    <div class="sidebar-section">
+      <div style="padding:12px;margin-bottom:4px">
+        <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:2px">Hospital Dashboard</div>
+        <div style="font-weight:700;color:white;font-size:.92rem">Apollo Hospitals</div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Operations</div>
+      <button class="sidebar-item active" onclick="showHPanel('h-overview',this)"><span class="si-icon">📊</span> Overview</button>
+      <button class="sidebar-item" onclick="showHPanel('h-appointments',this)"><span class="si-icon">📅</span> Appointments <span class="sidebar-badge">5</span></button>
+      <button class="sidebar-item" onclick="showHPanel('h-patients',this)"><span class="si-icon">👥</span> Patient Records</button>
+      <button class="sidebar-item" onclick="showHPanel('h-beds',this)"><span class="si-icon">🛏️</span> Bed Management</button>
+      <button class="sidebar-item" onclick="showHPanel('h-schedule',this)"><span class="si-icon">🕐</span> Doctor Schedule</button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Emergency</div>
+      <button class="sidebar-item" onclick="showHPanel('h-emergency',this)"><span class="si-icon">🚨</span> Emergency Inbox <span class="sidebar-badge">3</span></button>
+      <button class="sidebar-item" onclick="showHPanel('h-ambulance',this)"><span class="si-icon">🚑</span> Ambulance Fleet</button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Admin</div>
+      <button class="sidebar-item" onclick="showHPanel('h-settings',this)"><span class="si-icon">⚙️</span> Hospital Settings</button>
+    </div>
+  </div>
+  <div class="dash-main hosp-main">
+
+    <!-- OVERVIEW -->
+    <div class="dash-panel active" id="h-overview">
+      <div class="dash-header"><div class="dash-title">Hospital Overview</div><div class="dash-sub">Tuesday, 10 March 2026 · Apollo Hospitals, Jubilee Hills</div></div>
+      <div class="dash-grid">
+        <div class="dash-stat-card hosp-stat"><div class="dsc-icon">📅</div><div class="dsc-num">48</div><div class="dsc-lbl">Today's Appointments</div></div>
+        <div class="dash-stat-card hosp-stat"><div class="dsc-icon">🛏️</div><div class="dsc-num">12</div><div class="dsc-lbl">Available Beds</div></div>
+        <div class="dash-stat-card hosp-stat"><div class="dsc-icon">🚨</div><div class="dsc-num">3</div><div class="dsc-lbl">Active Emergencies</div></div>
+        <div class="dash-stat-card hosp-stat"><div class="dsc-icon">📈</div><div class="dsc-num">94%</div><div class="dsc-lbl">Show-up Rate</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="dash-card">
+          <div class="dash-card-title">🚨 Emergency Alerts <a onclick="showHPanel('h-emergency',null)">View All</a></div>
+          <div class="alert-item alert-sos"><div class="alert-icon">🆘</div><div><div class="alert-title">SOS — Rajesh Kumar, 1.2 km away</div><div class="alert-sub">Cardiac emergency · 2 min ago</div></div><button class="alert-action alert-action-red" onclick="showToast('Ambulance dispatched!')">Dispatch</button></div>
+          <div class="alert-item alert-appt"><div class="alert-icon">📅</div><div><div class="alert-title">Priya Sharma checked in</div><div class="alert-sub">Orthopaedics · 11:00 AM slot</div></div><button class="alert-action alert-action-blue" onclick="showToast('Patient admitted!')">Admit</button></div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-title">Today's Schedule <a onclick="showHPanel('h-schedule',null)">View All</a></div>
+          <div class="schedule-row"><div class="schedule-time">10:30 AM</div><div class="schedule-patient"><div class="schedule-doc">Rajesh Kumar</div><div class="schedule-dept">Cardiology · Dr. S. Rao</div></div><span class="status-badge status-upcoming">Waiting</span></div>
+          <div class="schedule-row"><div class="schedule-time">11:00 AM</div><div class="schedule-patient"><div class="schedule-doc">Priya Sharma</div><div class="schedule-dept">Orthopaedics · Dr. P. Mehta</div></div><span class="status-badge status-completed">In Room</span></div>
+          <div class="schedule-row"><div class="schedule-time">11:45 AM</div><div class="schedule-patient"><div class="schedule-doc">Lakshmi Devi</div><div class="schedule-dept">Neurology · Dr. V. Iyer</div></div><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="dash-panel" id="h-appointments">
+      <div class="dash-header"><div class="dash-title">Appointments</div><div class="dash-sub">All bookings for today</div></div>
+      <div class="dash-card">
+        <div class="dash-card-title">Today — 10 March 2026 &nbsp;<span style="font-size:.78rem;font-weight:400;color:var(--ink-light)">48 appointments</span></div>
+        <table class="patient-table">
+          <thead><tr><th>Time</th><th>Patient</th><th>Doctor</th><th>Department</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>10:30 AM</td><td>Rajesh Kumar</td><td>Dr. S. Rao</td><td>Cardiology</td><td><span class="status-badge status-upcoming">Waiting</span></td><td><button class="record-btn" onclick="showToast('Patient admitted!')">Admit</button></td></tr>
+            <tr><td>11:00 AM</td><td>Priya Sharma</td><td>Dr. P. Mehta</td><td>Orthopaedics</td><td><span class="status-badge status-completed">In Room</span></td><td><button class="record-btn" onclick="showToast('Prescription sent!')">Prescribe</button></td></tr>
+            <tr><td>11:45 AM</td><td>Lakshmi Devi</td><td>Dr. V. Iyer</td><td>Neurology</td><td><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></td><td><button class="record-btn" onclick="showToast('Marked as waiting!')">Check In</button></td></tr>
+            <tr><td>12:00 PM</td><td>Arun Reddy</td><td>Dr. S. Rao</td><td>Cardiology</td><td><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></td><td><button class="record-btn" onclick="showToast('Marked as waiting!')">Check In</button></td></tr>
+            <tr><td>2:00 PM</td><td>Meena Patel</td><td>Dr. R. Gupta</td><td>General</td><td><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></td><td><button class="record-btn" onclick="showToast('Marked as waiting!')">Check In</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PATIENTS -->
+    <div class="dash-panel" id="h-patients">
+      <div class="dash-header"><div class="dash-title">Patient Records</div><div class="dash-sub">All registered patients at this hospital</div></div>
+      <div class="dash-card">
+        <div class="dash-card-title">Patient Registry</div>
+        <div style="margin-bottom:16px"><input class="form-control" placeholder="🔍 Search patients by name, ID or condition..." style="max-width:360px"/></div>
+        <table class="patient-table">
+          <thead><tr><th>Patient ID</th><th>Name</th><th>Age</th><th>Blood Group</th><th>Last Visit</th><th>Condition</th><th>Records</th></tr></thead>
+          <tbody>
+            <tr><td>P-001</td><td>Rajesh Kumar</td><td>40</td><td>B+</td><td>12 Feb 2026</td><td>Hypertension</td><td><button class="record-btn" onclick="showToast('Opening records...')">View</button></td></tr>
+            <tr><td>P-002</td><td>Priya Sharma</td><td>35</td><td>A+</td><td>8 Mar 2026</td><td>Knee Injury</td><td><button class="record-btn" onclick="showToast('Opening records...')">View</button></td></tr>
+            <tr><td>P-003</td><td>Lakshmi Devi</td><td>62</td><td>O+</td><td>22 Jan 2026</td><td>Migraine</td><td><button class="record-btn" onclick="showToast('Opening records...')">View</button></td></tr>
+            <tr><td>P-004</td><td>Arun Reddy</td><td>55</td><td>AB+</td><td>5 Mar 2026</td><td>Diabetes Type 2</td><td><button class="record-btn" onclick="showToast('Opening records...')">View</button></td></tr>
+            <tr><td>P-005</td><td>Meena Patel</td><td>28</td><td>B-</td><td>1 Mar 2026</td><td>General Checkup</td><td><button class="record-btn" onclick="showToast('Opening records...')">View</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BEDS -->
+    <div class="dash-panel" id="h-beds">
+      <div class="dash-header"><div class="dash-title">Bed Management</div><div class="dash-sub">Real-time bed availability across all wards</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px">
+        <div style="background:var(--teal-pale);border:1px solid var(--border-teal);border-radius:14px;padding:18px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:var(--teal)">12</div><div style="font-size:.8rem;color:var(--ink-light)">Available Beds</div></div>
+        <div style="background:#FEE2E2;border:1px solid #FECACA;border-radius:14px;padding:18px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:var(--red)">36</div><div style="font-size:.8rem;color:var(--ink-light)">Occupied Beds</div></div>
+        <div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:14px;padding:18px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:var(--amber)">4</div><div style="font-size:.8rem;color:var(--ink-light)">Reserved Beds</div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">Ward A — General</div>
+        <div class="bed-grid" id="bed-grid"></div>
+        <div style="display:flex;gap:20px;margin-top:16px;font-size:.75rem">
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;background:#DCFCE7;border:1px solid #BBF7D0;border-radius:4px;display:inline-block"></span>Free</span>
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;background:#FEE2E2;border:1px solid #FECACA;border-radius:4px;display:inline-block"></span>Occupied</span>
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;background:#FEF3C7;border:1px solid #FDE68A;border-radius:4px;display:inline-block"></span>Reserved</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div class="dash-panel" id="h-schedule">
+      <div class="dash-header"><div class="dash-title">Doctor Schedule</div><div class="dash-sub">Today's doctor roster and appointment timeline</div></div>
+      <div class="dash-card">
+        <div class="dash-card-title">Today — Full Schedule</div>
+        <div class="schedule-row"><div class="schedule-time">9:00 AM</div><div class="schedule-patient"><div class="schedule-doc">Walk-in — Sanjay Mehta</div><div class="schedule-dept">General Medicine · Dr. R. Gupta</div></div><span class="status-badge status-completed">Done</span></div>
+        <div class="schedule-row"><div class="schedule-time">10:30 AM</div><div class="schedule-patient"><div class="schedule-doc">Rajesh Kumar</div><div class="schedule-dept">Cardiology · Dr. S. Rao</div></div><span class="status-badge status-upcoming">Waiting</span></div>
+        <div class="schedule-row"><div class="schedule-time">11:00 AM</div><div class="schedule-patient"><div class="schedule-doc">Priya Sharma</div><div class="schedule-dept">Orthopaedics · Dr. P. Mehta</div></div><span class="status-badge status-completed">In Room</span></div>
+        <div class="schedule-row"><div class="schedule-time">11:45 AM</div><div class="schedule-patient"><div class="schedule-doc">Lakshmi Devi</div><div class="schedule-dept">Neurology · Dr. V. Iyer</div></div><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></div>
+        <div class="schedule-row"><div class="schedule-time">2:00 PM</div><div class="schedule-patient"><div class="schedule-doc">Arun Reddy</div><div class="schedule-dept">Cardiology · Dr. S. Rao</div></div><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></div>
+        <div class="schedule-row"><div class="schedule-time">3:30 PM</div><div class="schedule-patient"><div class="schedule-doc">Meena Patel</div><div class="schedule-dept">General Medicine · Dr. R. Gupta</div></div><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></div>
+      </div>
+    </div>
+
+    <!-- EMERGENCY -->
+    <div class="dash-panel" id="h-emergency">
+      <div class="dash-header"><div class="dash-title">Emergency Inbox</div><div class="dash-sub">Real-time SOS alerts from patients nearby</div></div>
+      <div class="dash-card">
+        <div class="dash-card-title">Active Emergencies</div>
+        <div class="alert-item alert-sos"><div class="alert-icon">🆘</div><div><div class="alert-title">SOS — Rajesh Kumar</div><div class="alert-sub">Cardiac emergency · 1.2 km away · B+ blood type · 2 min ago</div></div><button class="alert-action alert-action-red" onclick="showToast('Ambulance dispatched to Rajesh Kumar!')">Dispatch Ambulance</button></div>
+        <div class="alert-item alert-sos"><div class="alert-icon">🆘</div><div><div class="alert-title">SOS — Unknown Patient</div><div class="alert-sub">Road accident · 2.8 km away · Offline Medical ID active · 5 min ago</div></div><button class="alert-action alert-action-red" onclick="showToast('Ambulance dispatched!')">Dispatch Ambulance</button></div>
+        <div class="alert-item alert-sos"><div class="alert-icon">🩸</div><div><div class="alert-title">Blood Request — O- urgently needed</div><div class="alert-sub">3 units needed · ICU patient · 10 min ago</div></div><button class="alert-action alert-action-red" onclick="showToast('Donor alert sent!')">Alert Donors</button></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">Recent Resolved</div>
+        <div class="alert-item" style="background:#F0FDF4;border-color:#BBF7D0"><div class="alert-icon">✅</div><div><div class="alert-title">Ambulance returned — Priya Nair</div><div class="alert-sub">Patient admitted · Ward B-12 · 45 min ago</div></div></div>
+        <div class="alert-item" style="background:#F0FDF4;border-color:#BBF7D0"><div class="alert-icon">✅</div><div><div class="alert-title">SOS resolved — Arun Sharma</div><div class="alert-sub">Discharged from ER · 2 hours ago</div></div></div>
+      </div>
+    </div>
+
+    <!-- AMBULANCE -->
+    <div class="dash-panel" id="h-ambulance">
+      <div class="dash-header"><div class="dash-title">Ambulance Fleet</div><div class="dash-sub">Live status of all ambulances</div></div>
+      <div class="dash-card">
+        <div class="dash-card-title">Fleet Status</div>
+        <table class="patient-table">
+          <thead><tr><th>Unit</th><th>Reg. No.</th><th>Driver</th><th>Status</th><th>Location</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>AMB-01</td><td>TS 09 AA 1234</td><td>Ramesh K.</td><td><span class="status-badge" style="background:#DCFCE7;color:var(--green)">Available</span></td><td>Hospital Base</td><td><button class="record-btn" onclick="showToast('AMB-01 dispatched!')">Dispatch</button></td></tr>
+            <tr><td>AMB-02</td><td>TS 09 BB 5678</td><td>Suresh M.</td><td><span class="status-badge status-emergency">On Call</span></td><td>Jubilee Hills</td><td><button class="record-btn" onclick="showToast('Tracking AMB-02...')">Track</button></td></tr>
+            <tr><td>AMB-03</td><td>TS 09 CC 9012</td><td>Venu P.</td><td><span class="status-badge" style="background:#DCFCE7;color:var(--green)">Available</span></td><td>Hospital Base</td><td><button class="record-btn" onclick="showToast('AMB-03 dispatched!')">Dispatch</button></td></tr>
+            <tr><td>AMB-04</td><td>TS 09 DD 3456</td><td>Krishna R.</td><td><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Maintenance</span></td><td>Workshop</td><td><span style="font-size:.78rem;color:var(--ink-light)">Unavailable</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="dash-panel" id="h-settings">
+      <div class="dash-header"><div class="dash-title">Hospital Settings</div><div class="dash-sub">Manage your hospital's information on E-Hospitee</div></div>
+      <div class="dash-card hosp-form">
+        <div class="dash-card-title">Hospital Information</div>
+        <div class="form-row"><div class="form-group"><label class="form-label">Hospital Name</label><input class="form-control" value="Apollo Hospitals"/></div><div class="form-group"><label class="form-label">Registration No.</label><input class="form-control" value="MCI-HYD-2024-00123"/></div></div>
+        <div class="form-group"><label class="form-label">Address</label><input class="form-control" value="Film Nagar, Jubilee Hills, Hyderabad — 500033"/></div>
+        <div class="form-row"><div class="form-group"><label class="form-label">Contact Number</label><input class="form-control" value="+91 40 2360 7777"/></div><div class="form-group"><label class="form-label">Emergency Line</label><input class="form-control" value="+91 40 2360 0000"/></div></div>
+        <div class="form-group"><label class="form-label">Specialties Available</label><input class="form-control" value="Cardiology, Orthopaedics, Neurology, General Medicine, Dermatology"/></div>
+        <div class="form-group"><label class="form-label">Total Beds</label><input class="form-control" type="number" value="52"/></div>
+        <button class="form-btn" style="width:auto;padding:12px 28px" onclick="showToast('Hospital settings saved!')">Save Changes</button>
+      </div>
+    </div>
+
+  </div><!-- /dash-main -->
+</div><!-- /dash-wrap -->
+</div><!-- /page-hospital -->
+
+<script>
+// ── PAGE NAVIGATION ──
+function goPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  initPage(id);
+}
+function initPage(id){
+  if(id==='page-landing'){
+    setTimeout(()=>{
+      const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.12});
+      document.querySelectorAll('#page-landing .reveal').forEach(el=>obs.observe(el));
+    },100);
+  }
+  if(id==='page-hospital') buildBedGrid();
+}
+
+// ── REGISTRATION ──
+let selectedRole='patient';
+function selectRole(r){
+  selectedRole=r;
+  document.getElementById('role-patient').classList.toggle('selected',r==='patient');
+  document.getElementById('role-hospital').classList.toggle('selected',r==='hospital');
+  document.getElementById('reg-patient-form').style.display=r==='patient'?'block':'none';
+  document.getElementById('reg-hospital-form').style.display=r==='hospital'?'block':'none';
+}
+
+// ── LOGIN ──
+function switchLoginTab(type,btn){
+  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('login-patient').style.display=type==='patient'?'block':'none';
+  document.getElementById('login-hospital').style.display=type==='hospital'?'block':'none';
+}
+
+// ── PATIENT DASHBOARD PANELS ──
+function showPanel(id,btn){
+  document.querySelectorAll('#page-patient .dash-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn){document.querySelectorAll('#page-patient .sidebar-item').forEach(s=>s.classList.remove('active'));btn.classList.add('active');}
+}
+
+// ── HOSPITAL DASHBOARD PANELS ──
+function showHPanel(id,btn){
+  document.querySelectorAll('#page-hospital .dash-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn){document.querySelectorAll('#page-hospital .sidebar-item').forEach(s=>s.classList.remove('active'));btn.classList.add('active');}
+}
+
+// ── BED GRID ──
+function buildBedGrid(){
+  const g=document.getElementById('bed-grid');
+  if(!g||g.children.length)return;
+  const states=['free','occupied','occupied','free','reserved','occupied','free','occupied','occupied','free','occupied','occupied','reserved','free','occupied','free'];
+  states.forEach((s,i)=>{
+    const b=document.createElement('div');
+    b.className='bed-cell bed-'+s;
+    b.textContent='B'+(i+1);
+    b.title='Bed '+(i+1)+' — '+s;
+    b.onclick=()=>showToast('Bed '+(i+1)+': '+s);
+    g.appendChild(b);
+  });
+}
+
+// ── HOW IT WORKS ──
+let currentStep=0;
+function setStep(idx,el){
+  document.querySelectorAll('.hiw-step').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.hiw-screen').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');document.getElementById('screen-'+idx).classList.add('active');currentStep=idx;
+}
+setInterval(()=>{
+  const steps=document.querySelectorAll('#page-landing .hiw-step');
+  if(!steps.length)return;
+  const next=(currentStep+1)%steps.length;setStep(next,steps[next]);
+},3500);
+
+// ── FOR WHO ──
+function switchTab(type,btn){
+  document.querySelectorAll('.fw-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.fw-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');document.getElementById('fw-'+type).classList.add('active');
+}
+
+// ── CTA ──
+function handleCTA(btn){
+  const inputs=btn.parentElement.querySelectorAll('input');let ok=true;
+  inputs.forEach(i=>{if(!i.value.trim()){i.style.borderColor='#F87171';setTimeout(()=>i.style.borderColor='',2000);ok=false;}});
+  if(ok){btn.textContent='Sent ✓';btn.style.background='#16A34A';document.getElementById('cta-success').style.display='block';inputs.forEach(i=>i.value='');}
+}
+
+// ── TOAST ──
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── HERO 3D TILT ──
+const tilt=document.getElementById('tiltCard');
+if(tilt){
+  const p=tilt.closest('.hero-visual');
+  p.addEventListener('mousemove',e=>{
+    const r=tilt.getBoundingClientRect();
+    const dx=(e.clientX-r.left-r.width/2)/(r.width/2);
+    const dy=(e.clientY-r.top-r.height/2)/(r.height/2);
+    tilt.style.transform=`perspective(800px) rotateY(${dx*14}deg) rotateX(${-dy*10}deg) scale(1.02)`;
+  });
+  p.addEventListener('mouseleave',()=>{tilt.style.transform='';});
+}
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar')&&document.getElementById('navbar').classList.toggle('scrolled',scrollY>20);
+});
+
+// ── PARALLAX ORBS ──
+window.addEventListener('scroll',()=>{
+  document.querySelectorAll('.orb').forEach((o,i)=>{o.style.transform=`translateY(${scrollY*(0.08+i*0.04)}px)`;});
+});
+
+// ══════════════════════════════════════
+// E-HOSPITEE DATABASE (IndexedDB + localStorage)
+// ══════════════════════════════════════
+const DB = {
+  _prefix: 'ehospitee_',
+  _idb: null,
+
+  async init() {
+    return new Promise((res, rej) => {
+      const req = indexedDB.open('EHospiteeDB', 1);
+      req.onupgradeneeded = e => {
+        const db = e.target.result;
+        ['patients','hospitals','appointments','records','medications','vitals','emergencies','messages'].forEach(store => {
+          if (!db.objectStoreNames.contains(store)) {
+            const s = db.createObjectStore(store, { keyPath: 'id', autoIncrement: true });
+            if (store === 'patients') s.createIndex('email', 'email', { unique: true });
+            if (store === 'hospitals') s.createIndex('email', 'email', { unique: true });
+            if (store === 'appointments') s.createIndex('patientId', 'patientId', { unique: false });
+            if (store === 'records') s.createIndex('patientId', 'patientId', { unique: false });
+            if (store === 'medications') s.createIndex('patientId', 'patientId', { unique: false });
+          }
+        });
+      };
+      req.onsuccess = e => { this._idb = e.target.result; this._seedData(); res(); };
+      req.onerror = () => rej(req.error);
+    });
+  },
+
+  async _seedData() {
+    await this._loadSession();
+  },
+
+  async _loadSession() {
+    const s = localStorage.getItem(this._prefix + 'session');
+    if (s) {
+      const session = JSON.parse(s);
+      currentUser = session;
+    }
+  },
+
+  // Core CRUD
+  async add(store, data) {
+    return new Promise((res, rej) => {
+      const tx = this._idb.transaction(store, 'readwrite');
+      const req = tx.objectStore(store).add(data);
+      req.onsuccess = () => res(req.result);
+      req.onerror = () => rej(req.error);
+    });
+  },
+
+  async get(store, id) {
+    return new Promise((res, rej) => {
+      const tx = this._idb.transaction(store, 'readonly');
+      const req = tx.objectStore(store).get(id);
+      req.onsuccess = () => res(req.result);
+      req.onerror = () => rej(req.error);
+    });
+  },
+
+  async getAll(store) {
+    return new Promise((res, rej) => {
+      const tx = this._idb.transaction(store, 'readonly');
+      const req = tx.objectStore(store).getAll();
+      req.onsuccess = () => res(req.result);
+      req.onerror = () => rej(req.error);
+    });
+  },
+
+  async getByIndex(store, index, value) {
+    return new Promise((res, rej) => {
+      const tx = this._idb.transaction(store, 'readonly');
+      const req = tx.objectStore(store).index(index).getAll(value);
+      req.onsuccess = () => res(req.result);
+      req.onerror = () => rej(req.error);
+    });
+  },
+
+  async put(store, data) {
+    return new Promise((res, rej) => {
+      const tx = this._idb.transaction(store, 'readwrite');
+      const req = tx.objectStore(store).put(data);
+      req.onsuccess = () => res(req.result);
+      req.onerror = () => rej(req.error);
+    });
+  },
+
+  async delete(store, id) {
+    return new Promise((res, rej) => {
+      const tx = this._idb.transaction(store, 'readwrite');
+      const req = tx.objectStore(store).delete(id);
+      req.onsuccess = () => res();
+      req.onerror = () => rej(req.error);
+    });
+  },
+
+  async count(store) {
+    return new Promise((res, rej) => {
+      const tx = this._idb.transaction(store, 'readonly');
+      const req = tx.objectStore(store).count();
+      req.onsuccess = () => res(req.result);
+      req.onerror = () => rej(req.error);
+    });
+  },
+
+  async findByEmail(store, email) {
+    const all = await this.getAll(store);
+    return all.find(r => r.email === email) || null;
+  },
+
+  // Session
+  setSession(user, role) {
+    currentUser = { ...user, role };
+    localStorage.setItem(this._prefix + 'session', JSON.stringify(currentUser));
+  },
+
+  clearSession() {
+    currentUser = null;
+    localStorage.removeItem(this._prefix + 'session');
+  }
+};
+
+let currentUser = null;
+
+// Init DB on load
+DB.init().catch(e => console.error('DB init failed:', e));
+
+// ── REGISTRATION (DB-connected) ──
+async function handleRegister() {
+  const btn = document.getElementById('reg-btn');
+  btn.textContent = 'Creating account...';
+  btn.disabled = true;
+
+  try {
+    if (selectedRole === 'patient') {
+      const inputs = document.querySelectorAll('#reg-patient-form input, #reg-patient-form select');
+      const [firstName, lastName, mobile, email, dob, bloodGroup, password, confirmPw] = [...inputs].map(i => i.value.trim());
+      if (!firstName || !email || !password) { showToast('⚠️ Please fill all required fields'); btn.textContent='Create Account →'; btn.disabled=false; return; }
+      if (password !== confirmPw) { showToast('⚠️ Passwords do not match'); btn.textContent='Create Account →'; btn.disabled=false; return; }
+
+      // Save to server (PostgreSQL)
+      const res = await fetch('/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName, lastName, mobile, email, dob, bloodGroup, password, role: 'patient' })
+      });
+      const data = await res.json();
+      if (!data.success) { showToast('⚠️ ' + data.error); btn.textContent='Create Account →'; btn.disabled=false; return; }
+
+      // Also save locally for dashboard data
+      const id = await DB.add('patients', { firstName, lastName, mobile, email, dob, bloodGroup, password, allergies:'', emergencyContact:'', serverId: data.user.id, createdAt: new Date().toISOString() });
+      const user = await DB.get('patients', id);
+      DB.setSession(user, 'patient');
+      showToast('✅ Account created successfully!');
+      goPage('page-patient');
+      loadPatientDash(user);
+
+    } else {
+      const inputs = document.querySelectorAll('#reg-hospital-form input');
+      const [name, regNo, city, pincode, contactPerson, email, phone, password] = [...inputs].map(i => i.value.trim());
+      if (!name || !email || !password) { showToast('⚠️ Please fill all required fields'); btn.textContent='Create Account →'; btn.disabled=false; return; }
+
+      // Save to server (PostgreSQL)
+      const res = await fetch('/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName: name, email, mobile: phone, password, role: 'hospital' })
+      });
+      const data = await res.json();
+      if (!data.success) { showToast('⚠️ ' + data.error); btn.textContent='Create Account →'; btn.disabled=false; return; }
+
+      await DB.add('hospitals', { name, regNo, city, pincode, contactPerson, email, phone, password, createdAt: new Date().toISOString() });
+      DB.setSession({ name, email }, 'hospital');
+      showToast('✅ Hospital account created!');
+      setTimeout(() => goPage('page-hospital'), 800);
+    }
+  } catch(e) {
+    showToast('⚠️ Registration failed. Try again.');
+    console.error(e);
+  }
+  btn.textContent = 'Create Account →'; btn.disabled = false;
+}
+
+// ── LOGIN (DB-connected) ──
+function handleLogin(type) {
+  if (type === 'patient') {
+    const email = document.getElementById('login-id').value.trim();
+    const password = document.getElementById('login-pw').value.trim();
+    if (!email || !password) { showToast('⚠️ Enter email and password'); return; }
+
+    const btn = document.getElementById('patient-login-btn');
+    btn.style.opacity = '0.7'; btn.textContent = 'Signing in…';
+
+    fetch('/signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    })
+    .then(r => r.json())
+    .then(data => {
+      btn.style.opacity = '1'; btn.textContent = 'Sign In as Patient →';
+      if (!data.success) {
+        showToast('⚠️ Invalid email or password');
+        return;
+      }
+      const user = {
+        id: data.user.id,
+        firstName: data.user.first_name,
+        lastName: data.user.last_name,
+        email: data.user.email,
+        mobile: data.user.mobile || '',
+        dob: data.user.dob || '',
+        bloodGroup: data.user.blood_group || '',
+        patientId: data.user.patient_id || '',
+        allergies: '', emergencyContact: ''
+      };
+      DB.setSession(user, 'patient');
+      goPage('page-patient');
+      loadPatientDash(user);
+    })
+    .catch(e => {
+      btn.style.opacity = '1'; btn.textContent = 'Sign In as Patient →';
+      showToast('⚠️ Login failed. Try again.');
+      console.error(e);
+    });
+    return;
+  }
+  if (type === 'hospital') {
+    const email = document.getElementById('hosp-login-id').value.trim();
+    const password = document.getElementById('hosp-login-pw').value.trim();
+    if (!email || !password) { showToast('⚠️ Enter email and password'); return; }
+
+    fetch('/signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (!data.success) { showToast('⚠️ ' + data.error); return; }
+      DB.setSession({ name: data.user.first_name, email: data.user.email }, 'hospital');
+      goPage('page-hospital');
+    })
+    .catch(e => {
+      showToast('⚠️ Login failed. Try again.');
+      console.error(e);
+    });
+    return;
+  }
+}
+
+async function loadPatientDash(user) {
+  document.getElementById('patient-name').textContent = user.firstName;
+  document.getElementById('sidebar-patient-name').textContent = user.firstName + ' ' + (user.lastName||'');
+  const pidEl = document.getElementById('sidebar-patient-id');
+  if (pidEl) pidEl.textContent = user.patientId || '—';
+  const now = new Date();
+  const istDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+  const h = istDate.getHours();
+  const greetWord = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  const greet = document.getElementById('dash-greeting');
+  if (greet) greet.textContent = greetWord + ', ' + user.firstName;
+  const dateSub = document.getElementById('dash-date-sub');
+  if (dateSub) {
+    const dateStr = istDate.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric', timeZone:'Asia/Kolkata' });
+    dateSub.textContent = dateStr + ' · Here\'s your health summary';
+  }
+
+  // Skip DB queries for optimistic/temp login — real data loads when server responds
+  if (!user.id) return;
+
+  // Populate profile form with user's data
+  const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+  setVal('prof-fname', user.firstName);
+  setVal('prof-lname', user.lastName);
+  setVal('prof-dob', user.dob);
+  setVal('prof-mobile', user.mobile);
+  setVal('prof-email', user.email);
+  setVal('prof-allergies', user.allergies);
+  setVal('prof-emergency', user.emergencyContact);
+  const bloodEl = document.getElementById('prof-blood');
+  if (bloodEl && user.bloodGroup) bloodEl.value = user.bloodGroup;
+
+  // Load appointments
+  const appts = await DB.getByIndex('appointments', 'patientId', user.id);
+  renderAppointments(appts);
+
+  // Load records
+  const recs = await DB.getByIndex('records', 'patientId', user.id);
+  recs.forEach(r => _recsCache[r.id] = r);
+  renderRecords(recs);
+
+  // Load medications
+  const meds = await DB.getByIndex('medications', 'patientId', user.id);
+  renderMedications(meds);
+
+  // Load vitals
+  const vitals = await DB.getAll('vitals');
+  const v = vitals.find(v => v.patientId === user.id);
+  if (v) renderVitals(v);
+}
+
+function renderAppointments(appts) {
+  const upcoming = appts.filter(a => a.status === 'upcoming');
+  const past = appts.filter(a => a.status !== 'upcoming');
+
+  // Overview upcoming
+  const ovUp = document.getElementById('overview-upcoming');
+  if (ovUp) {
+    ovUp.innerHTML = upcoming.length ? upcoming.map(a => `
+      <div class="appt-row">
+        <div class="appt-avatar2">🩺</div>
+        <div class="appt-info"><div class="appt-doc">${a.doctor} — ${a.specialty}</div><div class="appt-spec">${a.hospital} · ${a.date} · ${a.time}</div></div>
+        <span class="status-badge status-upcoming">Upcoming</span>
+      </div>`).join('') : '<div style="color:var(--ink-light);font-size:.85rem;padding:12px 0">No upcoming appointments</div>';
+  }
+
+  // Appointments panel
+  const apptUp = document.getElementById('appt-upcoming');
+  if (apptUp) apptUp.innerHTML = upcoming.length ? upcoming.map(a => `
+    <div class="appt-row">
+      <div class="appt-avatar2">🩺</div>
+      <div class="appt-info"><div class="appt-doc">${a.doctor} — ${a.specialty}</div><div class="appt-spec">${a.hospital} · ${a.date} · ${a.time}</div></div>
+      <span class="status-badge status-upcoming">Upcoming</span>
+    </div>`).join('') : '<div style="color:var(--ink-light);font-size:.85rem;padding:12px 0">No upcoming appointments</div>';
+
+  const apptPast = document.getElementById('appt-past');
+  if (apptPast) apptPast.innerHTML = past.length ? past.map(a => `
+    <div class="appt-row">
+      <div class="appt-avatar2">🩺</div>
+      <div class="appt-info"><div class="appt-doc">${a.doctor} — ${a.specialty}</div><div class="appt-spec">${a.hospital} · ${a.date}</div></div>
+      <span class="status-badge status-${a.status}">${a.status.charAt(0).toUpperCase()+a.status.slice(1)}</span>
+    </div>`).join('') : '<div style="color:var(--ink-light);font-size:.85rem;padding:12px 0">No past appointments</div>';
+
+  // Stat count
+  const statEl = document.getElementById('stat-upcoming');
+  if (statEl) statEl.textContent = upcoming.length;
+  const badge = document.getElementById('appt-badge');
+  if (badge) { badge.textContent = upcoming.length; badge.style.display = upcoming.length ? '' : 'none'; }
+}
+
+function renderRecords(recs) {
+  const icons = { lab:'🧪', prescription:'🩺', report:'📄', summary:'📋', upload:'📎' };
+  const html = recs.length ? recs.map(r => `
+    <div class="record-item" id="rec-${r.id}">
+      <div class="record-icon">${icons[r.type]||'📄'}</div>
+      <div style="flex:1"><div class="record-name">${r.name}</div><div class="record-date">${r.hospital} · ${r.date}</div></div>
+      <div style="display:flex;gap:6px;margin-left:auto;flex-shrink:0">
+        ${r.fileData ? `<button class="record-btn" onclick="viewRecord(${r.id})">👁 View</button>` : `<span style="font-size:.72rem;color:var(--ink-light);padding:5px 8px">No file</span>`}
+        <button class="record-btn" style="background:#EFF6FF;color:#2563EB;border:none" onclick="openEditRecord(${r.id})">✏ Edit</button>
+        <button class="record-btn" style="background:#FEE2E2;color:var(--red);border:none" onclick="deleteRecord(${r.id})">🗑 Delete</button>
+      </div>
+    </div>`).join('') : '<div style="color:var(--ink-light);font-size:.85rem;padding:12px 0">No records found</div>';
+
+  const recEl = document.getElementById('records-list');
+  if (recEl) recEl.innerHTML = html;
+  const ovRec = document.getElementById('overview-records');
+  if (ovRec) ovRec.innerHTML = recs.slice(0,2).map(r=>`
+    <div class="record-item">
+      <div class="record-icon">${icons[r.type]||'📄'}</div>
+      <div style="flex:1"><div class="record-name">${r.name}</div><div class="record-date">${r.hospital} · ${r.date}</div></div>
+      ${r.fileData ? `<button class="record-btn" onclick="viewRecord(${r.id})">👁 View</button>` : ''}
+    </div>`).join('');
+
+  const statEl = document.getElementById('stat-records');
+  if (statEl) statEl.textContent = recs.length;
+}
+
+// stored records map for quick access
+let _recsCache = {};
+
+async function viewRecord(id) {
+  const rec = _recsCache[id] || await DB.get('records', id);
+  if (!rec || !rec.fileData) { showToast('⚠️ No file attached'); return; }
+  _recsCache[id] = rec;
+
+  const modal = document.getElementById('record-modal');
+  document.getElementById('modal-title').textContent = rec.name;
+  const body = document.getElementById('modal-body');
+  const isImage = rec.fileData.startsWith('data:image');
+  const isPdf   = rec.fileData.startsWith('data:application/pdf');
+
+  if (isImage) {
+    body.innerHTML = `<img src="${rec.fileData}" style="max-width:100%;max-height:60vh;border-radius:10px;object-fit:contain"/>`;
+  } else if (isPdf) {
+    body.innerHTML = `<iframe src="${rec.fileData}" style="width:100%;height:60vh;border:none;border-radius:10px"></iframe>`;
+  } else {
+    body.innerHTML = `<div style="padding:40px;color:var(--ink-light)">Preview not available for this file type.<br>Use Download to open it.</div>`;
+  }
+
+  document.getElementById('modal-download-btn').onclick = () => {
+    const a = document.createElement('a');
+    a.href = rec.fileData; a.download = rec.name; a.click();
+  };
+  modal.style.display = 'flex';
+}
+
+function closeRecordModal() {
+  document.getElementById('record-modal').style.display = 'none';
+  document.getElementById('modal-body').innerHTML = '';
+}
+
+async function openEditRecord(id) {
+  const rec = _recsCache[id] || await DB.get('records', id);
+  if (!rec) return;
+  _recsCache[id] = rec;
+  document.getElementById('edit-rec-id').value = id;
+  document.getElementById('edit-rec-name').value = rec.name;
+  document.getElementById('edit-rec-type').value = rec.type || 'upload';
+  document.getElementById('edit-rec-hospital').value = rec.hospital || '';
+  document.getElementById('edit-modal').style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').style.display = 'none';
+}
+
+async function saveEditRecord() {
+  const id = parseInt(document.getElementById('edit-rec-id').value);
+  const rec = _recsCache[id] || await DB.get('records', id);
+  if (!rec) return;
+  rec.name     = document.getElementById('edit-rec-name').value.trim() || rec.name;
+  rec.type     = document.getElementById('edit-rec-type').value;
+  rec.hospital = document.getElementById('edit-rec-hospital').value.trim() || rec.hospital;
+  await DB.put('records', rec);
+  _recsCache[id] = rec;
+  closeEditModal();
+  const recs = await DB.getByIndex('records', 'patientId', currentUser.id);
+  renderRecords(recs);
+  showToast('✅ Record updated');
+}
+
+async function deleteRecord(id) {
+  if (!confirm('Delete this record?')) return;
+  await DB.delete('records', id);
+  delete _recsCache[id];
+  const recs = await DB.getByIndex('records', 'patientId', currentUser.id);
+  renderRecords(recs);
+  showToast('🗑 Record deleted');
+}
+
+function renderMedications(meds) {
+  const active = meds.filter(m => m.active);
+  const html = active.length ? active.map(m => `
+    <div class="med-item">
+      <div class="med-icon">💊</div>
+      <div><div class="med-name">${m.name}</div><div class="med-dose">${m.dose} · ${m.frequency} · By ${m.prescribedBy}</div></div>
+      <div class="med-time">${m.time}</div>
+    </div>`).join('') : '<div style="color:var(--ink-light);font-size:.85rem;padding:12px 0">No active medications</div>';
+
+  const medEl = document.getElementById('medications-list');
+  if (medEl) medEl.innerHTML = html;
+  const ovMed = document.getElementById('overview-meds');
+  if (ovMed) ovMed.innerHTML = html;
+  const statEl = document.getElementById('stat-meds');
+  if (statEl) statEl.textContent = active.length;
+}
+
+function renderVitals(v) {
+  const map = { 'stat-heartrate': v.heartRate, 'stat-bp': v.bp, 'stat-temp': v.temp, 'stat-sugar': v.sugar, 'stat-weight': v.weight, 'stat-spo2': v.spo2 };
+  Object.entries(map).forEach(([id, val]) => { const el=document.getElementById(id); if(el) el.textContent = val; });
+}
+
+// ── SAVE PROFILE (DB) ──
+async function saveProfile() {
+  if (!currentUser || currentUser.role !== 'patient') return;
+  const updated = {
+    ...currentUser,
+    firstName: document.getElementById('prof-fname').value,
+    lastName:  document.getElementById('prof-lname').value,
+    dob:       document.getElementById('prof-dob').value,
+    bloodGroup:document.getElementById('prof-blood').value,
+    mobile:    document.getElementById('prof-mobile').value,
+    email:     document.getElementById('prof-email').value,
+    allergies: document.getElementById('prof-allergies').value,
+    emergencyContact: document.getElementById('prof-emergency').value,
+  };
+  await DB.put('patients', updated);
+  DB.setSession(updated, 'patient');
+  document.getElementById('patient-name').textContent = updated.firstName;
+  document.getElementById('sidebar-patient-name').textContent = updated.firstName + ' ' + updated.lastName;
+  showToast('✅ Profile saved to database!');
+}
+
+// ── ADD MEDICATION (DB) ──
+async function addMedication() {
+  if (!currentUser) return;
+  const name = document.getElementById('new-med-name').value.trim();
+  const dose = document.getElementById('new-med-dose').value.trim();
+  const freq = document.getElementById('new-med-freq').value.trim();
+  const time = document.getElementById('new-med-time').value.trim();
+  if (!name) { showToast('⚠️ Enter medication name'); return; }
+  await DB.add('medications', { patientId: currentUser.id, name, dose, frequency: freq, time, prescribedBy:'Self', active: true, createdAt: new Date().toISOString() });
+  ['new-med-name','new-med-dose','new-med-freq','new-med-time'].forEach(id=>document.getElementById(id).value='');
+  const meds = await DB.getByIndex('medications', 'patientId', currentUser.id);
+  renderMedications(meds);
+  showToast('✅ Medication saved to database!');
+}
+
+// ── UPLOAD RECORD (DB) ──
+async function uploadRecord(input) {
+  if (!currentUser || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = async e => {
+    await DB.add('records', {
+      patientId: currentUser.id, name: file.name, type: 'upload',
+      hospital: 'Self Upload', date: new Date().toISOString().split('T')[0],
+      fileData: e.target.result, createdAt: new Date().toISOString()
+    });
+    const recs = await DB.getByIndex('records', 'patientId', currentUser.id);
+    recs.forEach(r => _recsCache[r.id] = r);
+    renderRecords(recs);
+    showToast('✅ Record uploaded and saved!');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── SAVE VITALS (DB) ──
+async function saveVitals() {
+  if (!currentUser) return;
+  const v = {
+    patientId: currentUser.id,
+    heartRate: document.getElementById('v-hr').value || document.getElementById('stat-heartrate').textContent,
+    bp:        document.getElementById('v-bp').value || document.getElementById('stat-bp').textContent,
+    temp:      document.getElementById('v-temp').value || document.getElementById('stat-temp').textContent,
+    sugar:     document.getElementById('v-sugar').value || document.getElementById('stat-sugar').textContent,
+    weight:    document.getElementById('v-weight').value || document.getElementById('stat-weight').textContent,
+    spo2:      document.getElementById('v-spo2').value || document.getElementById('stat-spo2').textContent,
+    recordedAt: new Date().toISOString()
+  };
+  await DB.add('vitals', v);
+  renderVitals(v);
+  ['v-hr','v-bp','v-temp','v-sugar','v-weight','v-spo2'].forEach(id=>document.getElementById(id).value='');
+  showToast('✅ Vitals saved to database!');
+}
+
+// ── SOS (DB) ──
+async function triggerSOS() {
+  const log = { patientId: currentUser?.id||0, type:'SOS', location:'Hyderabad', status:'dispatched', triggeredAt: new Date().toISOString() };
+  await DB.add('emergencies', log);
+  const logEl = document.getElementById('sos-log');
+  if (logEl) {
+    logEl.innerHTML = `<div style="background:#FEF2F2;border:1.5px solid #FECACA;border-radius:12px;padding:14px;margin-bottom:10px">
+      <div style="font-weight:700;color:#DC2626;font-size:.88rem">🚨 SOS Triggered — ${new Date().toLocaleTimeString()}</div>
+      <div style="font-size:.78rem;color:var(--ink-light);margin-top:6px">✅ Family notified &nbsp;·&nbsp; ✅ 3 Hospitals alerted &nbsp;·&nbsp; ✅ Ambulance dispatched<br>📍 Location shared automatically</div>
+    </div>` + logEl.innerHTML;
+  }
+  showToast('🚨 SOS sent! Ambulance dispatched. Family notified.');
+}
+
+// ── SIGN OUT ──
+function signOut() { DB.clearSession(); goPage('page-landing'); }
+
+// ── WHATSAPP CHAT ──
+const WA_NUMBER = '919876543210'; // Replace with real number
+let waOpen = false;
+
+function toggleChat(){
+  waOpen = !waOpen;
+  const chat = document.getElementById('waChat');
+  const dot = document.getElementById('waDot');
+  if(waOpen){
+    chat.classList.add('open');
+    dot.style.display = 'none';
+    setTimeout(()=>document.getElementById('waInput').focus(), 400);
+  } else {
+    chat.classList.remove('open');
+  }
+}
+
+function switchWaTab(tab, btn){
+  document.querySelectorAll('.wa-chat-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.wa-tab-content').forEach(c=>c.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('wa-tab-'+tab).classList.add('active');
+  closeEmojiPicker();
+}
+
+const waReplies = {
+  'book an appointment': "I can help you book an appointment! 📅 Please tell me:\n1. Which specialty?\n2. Preferred date & time?\n3. Your city?\n\nOr click 'Book Appointment' to go directly to our booking page.",
+  'emergency sos help': "🚨 For emergencies, please:\n• Press the **SOS button** in your dashboard\n• Or call 108 immediately\n\nYour location will be shared with the nearest hospitals automatically.",
+  'view my health records': "📋 Your health records are securely stored in your E-Hospitee dashboard.\n\nI can help you:\n• View prescriptions\n• Access lab reports\n• Share records with doctors",
+  'contact a doctor': "🩺 To contact a doctor:\n1. Log in to your dashboard\n2. Go to Appointments\n3. Select your doctor and send a message\n\nWould you like me to connect you now?",
+  'show my health records': "Here are your latest records:\n📄 Lipid Profile — 8 Mar 2026\n🩺 Prescription Dr. Rao — 12 Feb\n🧪 CBC Report — 10 Jan\n\nType the record name to view details.",
+  'medication reminders': "💊 I'll send you daily medication reminders on WhatsApp!\n\nYour current schedule:\n• Ecosprin 75mg — 8:00 AM ✅\n• Metoprolol 25mg — 8:00 PM ⏰\n• Atorvastatin 10mg — 10:00 PM ⏰",
+  'lab reports update': "🧪 Your lab results are ready!\n\nLatest: **Lipid Profile** uploaded by Apollo Hospitals on 8 Mar 2026.\n\nTap 'View' in your Health Records to access the full report.",
+  'doctor consultation': "🩺 Starting a doctor consultation...\n\nAvailable now:\n• Dr. S. Rao — Cardiology ✅\n• Dr. P. Mehta — Ortho ✅\n• Dr. R. Gupta — General ✅\n\nWhich doctor would you like to contact?",
+  'blood donor request': "🩸 Searching for donors near you...\n\nFound 3 O+ donors within 5 km of Hyderabad.\n\nShall I send them an alert? They'll be notified on WhatsApp.",
+  'ambulance tracking': "🚑 Live ambulance tracking activated!\n\nAMB-02 is 4 minutes away.\nCurrent location: Jubilee Hills → Your location\n\nYou'll receive live updates here.",
+  'default': "Thanks for reaching out! 😊 I'm the E-Hospitee WhatsApp assistant.\n\nI can help with:\n📅 Appointments\n📋 Health records\n💊 Medications\n🚨 Emergencies\n🩺 Doctor consultation\n\nWhat do you need help with?"
+};
+
+function getReply(msg){
+  const key = Object.keys(waReplies).find(k => msg.toLowerCase().includes(k));
+  return waReplies[key] || waReplies['default'];
+}
+
+function addMessage(text, type){
+  const container = document.getElementById('waMessages');
+  const now = new Date();
+  const time = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  const div = document.createElement('div');
+  div.className = 'wa-msg wa-msg-'+type;
+  div.innerHTML = text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    + `<div class="wa-msg-time">${time}${type==='out'?' <span class="wa-tick">✓✓</span>':''}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function showTyping(){
+  const container = document.getElementById('waMessages');
+  const t = document.createElement('div');
+  t.className = 'wa-typing'; t.id = 'waTyping';
+  t.innerHTML = '<span></span><span></span><span></span>';
+  container.appendChild(t);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeTyping(){ const t=document.getElementById('waTyping'); if(t)t.remove(); }
+
+function sendWaMessage(){
+  const input = document.getElementById('waInput');
+  const text = input.value.trim();
+  if(!text) return;
+  addMessage(text, 'out');
+  input.value = ''; input.style.height = 'auto';
+  closeEmojiPicker();
+  showTyping();
+  setTimeout(()=>{ removeTyping(); addMessage(getReply(text), 'in'); }, 900 + Math.random()*600);
+}
+
+function sendQuickReply(text){
+  if(!waOpen) toggleChat();
+  switchWaTab('chat', document.querySelector('.wa-chat-tab'));
+  setTimeout(()=>{
+    addMessage(text, 'out');
+    showTyping();
+    setTimeout(()=>{ removeTyping(); addMessage(getReply(text), 'in'); }, 1000);
+  }, waOpen ? 0 : 400);
+}
+
+function handleWaKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendWaMessage();} }
+function autoResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,80)+'px'; }
+
+// Emoji picker
+const EMOJIS = ['😊','😷','💊','🏥','❤️','👨‍⚕️','🩺','🩸','🚑','😰','🤒','💉','🧬','🩻','🏃','💪','🧘','😌','🙏','✅','⚠️','📋','📅','🔔','📞','💬','👋','🤝'];
+function buildEmojiGrid(){
+  const g = document.getElementById('waEmojiGrid');
+  EMOJIS.forEach(e=>{
+    const s = document.createElement('span');
+    s.textContent = e;
+    s.onclick = ()=>{ document.getElementById('waInput').value += e; closeEmojiPicker(); document.getElementById('waInput').focus(); };
+    g.appendChild(s);
+  });
+}
+function toggleEmojiPicker(e){ e.stopPropagation(); document.getElementById('waEmojiPicker').classList.toggle('open'); }
+function closeEmojiPicker(){ document.getElementById('waEmojiPicker').classList.remove('open'); }
+document.addEventListener('click', closeEmojiPicker);
+buildEmojiGrid();
+
+function openWhatsApp(){ window.open('https://wa.me/'+WA_NUMBER+'?text=Hi+E-Hospitee!+I+need+help+with+my+appointment.','_blank'); }
+
+// ── INIT LANDING REVEALS ──
+setTimeout(()=>{
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+},200);
+</script>
+</body>
+</html>
